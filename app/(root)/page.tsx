@@ -1,55 +1,29 @@
 import { Fragment } from 'react'
-
+import FeaturedDiv from '@/app/components/featuredDiv'
+import Image from 'next/image'
 const BasePage = () => {
 	return (
 		<div className="">
 			<div>
-				<div className='flex flex-col gap-y-2 p-6'>
-					<div className='text-3xl tracking-wider'>
-						Black Grimore
+				<div className='flex md:flex-row flex-col-reverse p-4 py-2 w-full justify-between items-center gap-y-2'>
+					<div className="flex flex-col gap-y-2 md:w-8/12 w-full">
+						<div className='text-3xl tracking-wider'>
+							Black Grimore
+						</div>
+						<div className='text-lg text-justify sm:tracking-wide'>
+							Black Grimore is my personal digital garden. Where I share and save my knowledge. It would allow me to access my notes or guides
+							anywhere and anytime.
+						</div>
 					</div>
-					<div className='text-lg text-justify tracking-wide'>
-						Black Grimore is my personal digital garden. Where I share and save my knowledge. It would allow me to access my notes or guides
-						anywhere and anytime.
+					<div className="flex flex-col items-center justify-center gap-y-2">
+						<Image unoptimized src="/images/grimoire.webp" width={0} height={0} className='h-full w-full md:h-[150px] md:w-[200px] ' />
+						<span className="text-sm">
+							Reference: Black Clover
+						</span>
 					</div>
 				</div>
-				<div className="text-2xl uppercase border-b-[0.1px] h-4 border-white/30 mt-4">
-					<span className='w-fit bg-background px-6'>
-						Featured
-					</span>
-				</div>
-				<div className="mt-5 flex flex-col">
-					{
-						new Array(5).fill(0).map(() => {
-							return (
-								<div className='flex flex-col gap-y-2 border-white/30 rounded-xl p-6 py-4'>
-									<div className='flex w-full justify-between'>
-										<div className='text-2xl tracking-wider uppercase'>
-											Post title
-										</div>
-										<div className='text-lg'>
-											today
-										</div>
-									</div>
-									<div className='flex gap-x-2'>
-										<div className='text-xs bg-secondary p-1 rounded-xl px-3'>
-											ML
-										</div>
-										<div className='text-xs bg-secondary p-1 rounded-xl px-3'>
-											WEB DEV
-										</div>
-									</div>
-									<div className='text-lg text-justify text-white/80 font-light tracking-wide'>
-										This is the description of this post and it states that this post is really really good, I am not gonna lie its the best
-									</div>
-									<div className='text-white/80 font-light'>
-										word count: 300
-									</div>
-								</div>
-							)
-						})
-					}
-				</div>
+				<FeaturedDiv headingName={"Featured"} />
+				<FeaturedDiv headingName={"Recent"} />
 			</div>
 		</div>
 	)

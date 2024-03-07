@@ -1,15 +1,20 @@
+'use client'
+
 import "./globals.css";
+import { RecoilRoot } from "recoil";
 
 export default function RootLayout({
-	children,
+	children, root
 }: Readonly<{
-	children: React.ReactNode;
+	children: React.ReactNode,
 }>) {
 	return (
 		<html lang="en">
 			<head></head>
 			<body className="bg-background text-text">
-				{children}
+				<RecoilRoot>
+					{children}
+				</RecoilRoot>
 			</body>
 		</html>
 	);

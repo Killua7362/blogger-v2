@@ -1,4 +1,3 @@
-import Linx from '@/app/components/linkx'
 
 const Footer = () => {
 	return (
@@ -6,7 +5,6 @@ const Footer = () => {
 			<div className='text-white/70'>
 				@Killua7362
 			</div>
-			<Linx/>
 		</div>
 	)
 }

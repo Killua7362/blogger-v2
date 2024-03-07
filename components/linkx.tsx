@@ -9,7 +9,7 @@ const Linx = () => {
 				href="https://github.com/Killua7362"
 				target="_blank"
 				rel="noopener noreferrer"
-				className="text-[30px]"
+				className="text-[20px] text-text"
 			>
 				<FaGithub />
 			</a>
@@ -22,8 +22,8 @@ const Linx = () => {
 			>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
-					width="30"
-					height="30"
+					width="20"
+					height="20"
 					fill="none"
 					viewBox="0 0 512 512"
 					id="twitter"
@@ -51,8 +51,8 @@ const Linx = () => {
 			>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
-					width="30"
-					height="30"
+					width="20"
+					height="20"
 					viewBox="0 0 72 72"
 					id="linkedin"
 				>
@@ -70,8 +70,8 @@ const Linx = () => {
 			<a tabIndex="-1" href="mailto:bhat7362@gmail.com">
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
-					width="30"
-					height="30"
+					width="20"
+					height="20"
 					enableBackground="new 0 0 141.7 141.7"
 					viewBox="0 0 141.7 141.7"
 					id="gmail"

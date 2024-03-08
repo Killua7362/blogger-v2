@@ -10,4 +10,17 @@ export const contextMenuState = atom({
 	default: { open: false, points: [0, 0] }
 })
 
+export const modalActiveState = atom({
+	key: 'modalActiveState',
+	default: false
+})
 
+export const adminState = atom({
+	key: 'adminState',
+	default: true
+})
+
+export const signInState = atom({
+	key:'signInState',
+	default:true
+})

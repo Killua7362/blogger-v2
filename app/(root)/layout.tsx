@@ -1,5 +1,5 @@
 'use client'
-import { Fragment } from 'react'
+import { Fragment, useState, useEffect } from 'react'
 
 import NavBar from "@/ui/layout/navbar";
 import Footer from "@/ui/layout/footer";
@@ -14,10 +14,22 @@ const RootLayout = (
 ) => {
 	const [isMenuOpen, setIsMenuOpen] = useRecoilState(navbarMenuState)
 	const [contextMenuMetaData, setContextMenuMetaData] = useRecoilState(contextMenuState)
-
+	const [isRender, setIsRender] = useState(false)
+	const [isHome, setIsHome] = useState(true)
 	const pathname = usePathname()
 
-	return (
+	useEffect(() => {
+		if (pathname === '/post') {
+			setIsHome(false)
+		} else if (pathname === '/' || pathname === '/posts') {
+			setIsHome(true)
+		}
+		if (!isRender) {
+			setIsRender(true)
+		}
+	}, [pathname])
+
+	return isRender && (
 		<div className="min-h-screen flex flex-col items-center justify-between"
 			onClick={() => {
 				setIsMenuOpen(false)
@@ -28,7 +40,7 @@ const RootLayout = (
 				setContextMenuMetaData({ open: false, points: [0, 0] })
 			}}
 		>
-			<NavBar />
+			<NavBar isHome={isHome} />
 			<div className="pt-28 2xl:w-6/12 xl:w-7/12 lg:w-8/12 w-10/12" >
 				{children}
 			</div>

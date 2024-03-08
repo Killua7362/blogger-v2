@@ -1,4 +1,7 @@
-export const MarkdownComponents =
+import { Components } from "react-markdown"
+import { Fragment } from 'react'
+
+export const MarkdownComponents: Components =
 {
 	em(props) {
 		const { node, ...rest } = props
@@ -13,7 +16,9 @@ export const MarkdownComponents =
 		return <ul className='list-disc' {...rest} />
 	},
 	pre({ children }) {
-		return children
+		return <Fragment>
+			{children}
+		</Fragment>
 	},
 }
 

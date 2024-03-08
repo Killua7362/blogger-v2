@@ -5,7 +5,7 @@ const Linx = () => {
 	return (
 		<div className="flex pt-2 gap-4">
 			<a
-				tabIndex="-1"
+				tabIndex={-1}
 				href="https://github.com/Killua7362"
 				target="_blank"
 				rel="noopener noreferrer"
@@ -14,7 +14,7 @@ const Linx = () => {
 				<FaGithub />
 			</a>
 			<a
-				tabIndex="-1"
+				tabIndex={-1}
 				href="https://twitter.com/Killua7362"
 				target="_blank"
 				rel="noopener noreferrer"
@@ -43,7 +43,7 @@ const Linx = () => {
 				</svg>
 			</a>
 			<a
-				tabIndex="-1"
+				tabIndex={-1}
 				href="https://www.linkedin.com/in/killua7362/"
 				target="_blank"
 				rel="noopener noreferrer"
@@ -67,7 +67,7 @@ const Linx = () => {
 					</g>
 				</svg>
 			</a>
-			<a tabIndex="-1" href="mailto:bhat7362@gmail.com">
+			<a tabIndex={-1} href="mailto:bhat7362@gmail.com">
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
 					width="20"

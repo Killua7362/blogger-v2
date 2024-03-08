@@ -3,10 +3,12 @@ import { Fragment } from 'react'
 import ContextMenu from '@/ui/components/posts/contextmenu'
 
 import { useRecoilState } from 'recoil'
-import { contextMenuState } from '@/atoms/states'
+import { contextMenuState, navbarMenuState, signInState } from '@/atoms/states'
 
 const PostsContainer = ({ filterConfig }: { filterConfig: any }) => {
 	const [contextMenuMetaData, setContextMenuMetaData] = useRecoilState(contextMenuState)
+	const [isMenuOpen, setIsMenuOpen] = useRecoilState(navbarMenuState)
+	const [isSignIn, setIsSignIn] = useRecoilState(signInState)
 
 	return (
 		<Fragment>
@@ -25,12 +27,15 @@ const PostsContainer = ({ filterConfig }: { filterConfig: any }) => {
 					new Array(filterConfig.postsCount).fill(0).map((_, i) => {
 						return (
 							<div className='flex flex-col gap-y-1 border-white/30 rounded-xl md:p-6 md:py-4 p-3' onContextMenu={(e) => {
-								e.preventDefault()
-								e.stopPropagation()
-								setContextMenuMetaData({
-									open: true,
-									points: [e.pageX, e.pageY]
-								})
+								if (isSignIn) {
+									e.preventDefault()
+									e.stopPropagation()
+									setIsMenuOpen(false)
+									setContextMenuMetaData({
+										open: true,
+										points: [e.pageX, e.pageY]
+									})
+								}
 							}}>
 								<div className='flex w-full justify-between'>
 									<div className='text-2xl tracking-wider uppercase'>

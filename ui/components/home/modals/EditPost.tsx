@@ -15,14 +15,22 @@ const EditPost = () => {
 	const [content, setContent] = useState("")
 
 	return (
-		<div className="p-6 w-full sm:w-10/12 xl:w-7/12 h-[40rem] border-primary/40 border-[0.1px] rounded-xl flex flex-col bg-background flex flex-col justify-between items-end" onClick={(e) => {
+		<div className="p-6 w-full sm:w-10/12 xl:w-7/12 h-[43rem] border-primary/40 border-[0.1px] rounded-xl flex flex-col bg-background flex flex-col justify-between items-end" onClick={(e) => {
 			e.stopPropagation()
 		}}>
+			<span className="text-lg cursor-pointer hover:text-white/70" onClick={() => {
+				setIsModalOpen({
+					open: false,
+					title: ""
+				})
+			}}>
+				<RxCross2 />
+			</span>
 			<MDEditor
 				value={content}
 				onChange={setContent}
 				preview={previewButton.value}
-				height={"90%"}
+				height={"85%"}
 				className='w-full'
 			/>
 			<div className="flex gap-x-4">

@@ -6,6 +6,9 @@ const AllPosts = () => {
 	return (
 		<Fragment>
 			<div className='md:px-8 py-0 p-5 flex flex-col gap-y-4 items-center'>
+				<div className='text-2xl font-medium tracking-wide'>
+					All Posts
+				</div>
 				<div className='w-full flex items-center justify-around rounded-xl border-primary/40 border-[0.1px] focus-within:border-primary/80 p-2 my-2'>
 					<span className='relative text-xl mt-2 ml-2'>
 						<FcSearch />

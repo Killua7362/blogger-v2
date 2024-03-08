@@ -6,6 +6,8 @@ import { modalStateData } from '@/atoms/states'
 import NewPostModal from '@/ui/components/home/modals/NewPost'
 import EditMetaData from '@/ui/components/home/modals/EditMetaData'
 import EditPost from '@/ui/components/home/modals/EditPost'
+import CommitModal from '@/ui/components/home/modals/Commit'
+import BookMarkModal from '@/ui/components/home/modals/Bookmarks'
 
 const Modal = () => {
 	const [isModalOpen, setIsModalOpen] = useRecoilState(modalStateData)
@@ -24,7 +26,9 @@ const Modal = () => {
 					{
 						'': <div />,
 						'New Post': <NewPostModal />,
-						'Edit Post':<EditPost/>,
+						'Edit Post': <EditPost />,
+						'Commit': <CommitModal />,
+						'Bookmarks': <BookMarkModal />,
 						'Edit MetaData': <EditMetaData />
 					}[isModalOpen.title]
 

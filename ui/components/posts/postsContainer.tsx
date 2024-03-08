@@ -15,7 +15,7 @@ const PostsContainer = ({ filterConfig }: { filterConfig: any }) => {
 			{contextMenuMetaData.open && <ContextMenu />}
 			{
 				filterConfig.headingName &&
-				<div className="text-2xl uppercase border-b-[0.1px] h-4 border-white/30 my-4">
+				<div className="text-2xl uppercase border-b-[0.1px] h-4 border-primary/40 my-4 tracking-wide font-medium">
 					<span className='w-fit bg-background pr-6'>
 						{filterConfig.headingName}
 					</span>
@@ -38,10 +38,10 @@ const PostsContainer = ({ filterConfig }: { filterConfig: any }) => {
 								}
 							}}>
 								<div className='flex w-full justify-between'>
-									<div className='text-2xl tracking-wider uppercase'>
+									<div className='text-2xl tracking-wide uppercase'>
 										Post title
 									</div>
-									<div className='text-lg'>
+									<div className='text-lg font-thin'>
 										today
 									</div>
 								</div>
@@ -53,10 +53,10 @@ const PostsContainer = ({ filterConfig }: { filterConfig: any }) => {
 										WEB DEV
 									</div>
 								</div>
-								<div className='text-lg text-justify text-white/80 font-light tracking-wide'>
+								<div className='text-lg text-justify text-white/80 font-thin tracking-wide'>
 									This is the description of this post and it states that this post is really really good.
 								</div>
-								<div className='text-white/80 font-light'>
+								<div className='text-white/80 font-thin'>
 									word count: 300
 								</div>
 							</div>

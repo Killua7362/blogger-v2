@@ -16,19 +16,18 @@ import rehypeSanitize from 'rehype-sanitize'
 import remarkGfm from 'remark-gfm'
 import rehypeFormat from 'rehype-format'
 
-import MDEditor from '@uiw/react-md-editor';
 
 const Post = () => {
 	const searchParams = useSearchParams()
 	// console.log(searchParams.get('id'))
 	return (
 		<Fragment>
-			<div className='md:px-8 px-2 mt-4 md:mt-8 flex flex-col md:gap-y-2 gap-y-3 text-2xl'>
-				<div className='text-justify'>
+			<div className='md:px-8 px-2 mt-4 md:mt-8 flex flex-col md:gap-y-2 gap-y-3'>
+				<div className='text-2xl text-justify tracking-wide'>
 					Adverse affect of using linux instead of windows in long term
 				</div>
 				<div className='flex justify-between'>
-					<div className='text-base'>
+					<div className='text-base font-thin'>
 						Today
 					</div>
 					<div className='flex gap-x-2'>

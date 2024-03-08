@@ -1,11 +1,12 @@
 'use client'
 
-import { Fragment, useEffect, useState } from 'react'
-import Comments from '@/components/comments'
+import { Fragment } from 'react'
 import '@/styles/markdown-styles.css'
+import { useSearchParams } from 'next/navigation'
+
 import { story } from './data.js'
 
-import { MarkdownComponents } from '@/components/markdown-components'
+import { MarkdownComponents } from '@/ui/components/posts/markdown-components'
 
 import * as matter from 'gray-matter'
 
@@ -18,10 +19,12 @@ import rehypeFormat from 'rehype-format'
 import MDEditor from '@uiw/react-md-editor';
 
 const Post = () => {
+	const searchParams = useSearchParams()
+	// console.log(searchParams.get('id'))
 	return (
 		<Fragment>
-			<div className='md:px-8 py-0 p-5 flex flex-col gap-y-2 text-2xl'>
-				<div>
+			<div className='md:px-8 px-2 mt-4 md:mt-8 flex flex-col md:gap-y-2 gap-y-3 text-2xl'>
+				<div className='text-justify'>
 					Adverse affect of using linux instead of windows in long term
 				</div>
 				<div className='flex justify-between'>
@@ -44,9 +47,7 @@ const Post = () => {
 						rehypePlugins={[rehypeFormat, rehypeSanitize]}
 						unwrapDisallowed
 					>{story}</Markdown>
-					<MDEditor />
 				</div>
-				<Comments />
 			</div>
 		</Fragment >
 	)

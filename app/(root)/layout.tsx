@@ -1,11 +1,13 @@
 'use client'
 import { Fragment } from 'react'
 
-import NavBar from "@/components/navbar";
-import Footer from "@/components/footer";
+import NavBar from "@/ui/layout/navbar";
+import Footer from "@/ui/layout/footer";
 
 import { useRecoilState } from 'recoil'
 import { navbarMenuState, contextMenuState } from '@/atoms/states'
+
+import { usePathname, useSearchParams } from 'next/navigation'
 
 const RootLayout = (
 	{ children }: { children: React.ReactNode }
@@ -13,8 +15,10 @@ const RootLayout = (
 	const [isMenuOpen, setIsMenuOpen] = useRecoilState(navbarMenuState)
 	const [contextMenuMetaData, setContextMenuMetaData] = useRecoilState(contextMenuState)
 
+	const pathname = usePathname()
+
 	return (
-		<div className="w-full min-h-screen flex flex-col items-center justify-between"
+		<div className="min-h-screen flex flex-col items-center justify-between"
 			onClick={() => {
 				setIsMenuOpen(false)
 				setContextMenuMetaData({ open: false, points: [0, 0] })

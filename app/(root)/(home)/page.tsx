@@ -1,9 +1,10 @@
 import { Fragment } from 'react'
 import Image from 'next/image'
-import Linx from '@/components/linkx'
+import Linx from '@/ui/layout/linkx'
 import { FcLink } from "react-icons/fc";
 import { MdKeyboardArrowRight } from "react-icons/md";
-import PostsContainer from '@/components/postsContainer'
+import PostsContainer from '@/ui/components/posts/postsContainer'
+import { FaArrowUpRightFromSquare } from "react-icons/fa6";
 
 const BasePage = () => {
 	return (
@@ -15,7 +16,9 @@ const BasePage = () => {
 							<span className='text-3xl'>
 								Black Grimore
 							</span>
-							<FcLink />
+							<div className='text-base text-primary cursor-pointer'>
+								<FaArrowUpRightFromSquare />
+							</div>
 						</div>
 						<div className='text-lg text-justify sm:tracking-wide'>
 							Black Grimore is my personal digital garden. Where I share and save my knowledge. It would allow me to access my notes or guides

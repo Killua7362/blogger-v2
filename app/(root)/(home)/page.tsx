@@ -5,6 +5,7 @@ import { FcLink } from "react-icons/fc";
 import { MdKeyboardArrowRight } from "react-icons/md";
 import PostsContainer from '@/ui/components/posts/postsContainer'
 import { FaArrowUpRightFromSquare } from "react-icons/fa6";
+import Link from 'next/link'
 
 const BasePage = () => {
 	return (
@@ -44,9 +45,11 @@ const BasePage = () => {
 					isPinned: false
 				}} />
 				<div className="w-full flex justify-center items-center hover:gap-x-2 cursor-pointer text-lg uppercase">
-					<div>
-						All Posts
-					</div>
+					<Link href={{ pathname: "/posts" }} className='text-white no-underline'>
+						<div>
+							All Posts
+						</div>
+					</Link>
 					<MdKeyboardArrowRight />
 				</div>
 			</div>

@@ -63,13 +63,9 @@ const CommitModal = () => {
 				</div>
 				<div className="flex gap-x-4">
 					<div className={`px-3 py-2 w-fit border-white text-background rounded-md text-md mt-2 cursor-pointer hover:bg-white/90 hover:text-background/90 ${staged ? "bg-red-500" : "bg-white"}`} onClick={() => {
-						if (staged === true) {
-
-						} else {
-							setRedisCommitsData(prev => {
-								return { ...tempDB }
-							})
-						}
+						setRedisCommitsData(prev => {
+							return { ...tempDB }
+						})
 						setIsModalOpen({ open: false, title: "" })
 					}}>
 						{staged ? "Push" : "Save"}

@@ -1,14 +1,17 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { useRecoilState } from 'recoil'
-import { navbarMenuState, modalStateData, contextMenuState, signInState, adminState } from '@/atoms/states'
+import { navbarMenuState, modalStateData, contextMenuState, signInState, adminState, redisCommits, allPosts } from '@/atoms/states'
 import { usePathname } from 'next/navigation'
 
-const DialogBox = ({ isModal, isHome, extraActions }: { isModal: boolean, isHome: boolean, extraActions: menuItems[] }) => {
+const DialogBox = ({ isModal, isHome, extraActions, id }: { isModal: boolean, isHome: boolean, extraActions: menuItems[], id: number }) => {
 	const [isRender, setIsRender] = useState(false)
 	const [isMenuOpen, setIsMenuOpen] = useRecoilState(navbarMenuState)
 	const [isContextOpen, setIsContextOpen] = useRecoilState(contextMenuState)
 	const [isModalOpen, setIsModalOpen] = useRecoilState(modalStateData)
+	const [allPostsData, setAllPostsData] = useRecoilState(allPosts)
+
+	const [redisCommitsData, setRedisCommitsData] = useRecoilState(redisCommits)
 
 	const [isSignedIn, setIsSignedIn] = useRecoilState(signInState)
 	const [isAdmin, setIsAdmin] = useRecoilState(adminState)
@@ -23,30 +26,49 @@ const DialogBox = ({ isModal, isHome, extraActions }: { isModal: boolean, isHome
 
 	}
 
-	const BookMarkHandler = () => {
-
-	}
-
-	const NewPostHandler = () => {
-	}
-
-	const CommitHandler = () => {
-
-	}
-
-	const EditPostHandler = () => {
-
-	}
-
 	const PinHandler = () => {
+		let payload = {}
+		payload = {
+			action: allPostsData[isContextOpen.id].pinned === true ? "unpin_post" : "pin_post",
+			payload: {
+				...allPostsData[isContextOpen.id],
+				pinned: allPostsData[isContextOpen.id] === true ? false : true
+			}
 
-	}
-
-	const EditMetadata = () => {
-
+		}
+		setRedisCommitsData(prev => {
+			return {
+				...prev,
+				[isContextOpen.id]: {
+					original: { ...(prev[isContextOpen.id]?.original || allPostsData[isContextOpen.id]) },
+					history: [
+						...(prev[isContextOpen.id]?.history || []),
+						payload
+					]
+				}
+			}
+		})
 	}
 
 	const DeleteHandler = () => {
+		setRedisCommitsData(prev => {
+			return {
+				...prev,
+				[isContextOpen.id]: {
+					original: { ...(prev[isContextOpen.id]?.original || allPostsData[isContextOpen.id]) },
+					history: [
+						...(prev[isContextOpen.id]?.history || []),
+						{
+							action: "delete_post",
+							payload: {}
+						}
+					]
+				}
+			}
+		})
+	}
+
+	const MarkHandler = () => {
 
 	}
 
@@ -60,7 +82,6 @@ const DialogBox = ({ isModal, isHome, extraActions }: { isModal: boolean, isHome
 	const NavBarMenuItemsAfter: menuItems[] = [
 		{
 			title: "Bookmarks",
-			onClickHandler: BookMarkHandler
 		},
 		{
 			title: "Sign Out",
@@ -71,30 +92,33 @@ const DialogBox = ({ isModal, isHome, extraActions }: { isModal: boolean, isHome
 	const NavBarMenuItemsHomeAdmin: menuItems[] = [
 		{
 			title: "New Post",
-			onClickHandler: NewPostHandler
 		},
 		{
 			title: "Commit",
-			onClickHandler: CommitHandler
 		}
 	]
 
 	const PostItemsAdmin: menuItems[] = [
 		{
 			title: "Edit MetaData",
-			onClickHandler: EditMetadata
 		},
 		{
 			title: "Edit Post",
-			onClickHandler: EditPostHandler
 		},
 		{
-			title: "Pin",
+			title: "Pin / UnPin",
 			onClickHandler: PinHandler
 		},
 		{
 			title: "Delete",
 			onClickHandler: DeleteHandler
+		}
+	]
+
+	const PostItemsNormal: menuItems[] = [
+		{
+			title: "Mark It",
+			onClickHandler: MarkHandler
 		}
 	]
 
@@ -122,26 +146,32 @@ const DialogBox = ({ isModal, isHome, extraActions }: { isModal: boolean, isHome
 		}
 		setIsRender(true)
 	}, [])
+
 	return isRender && (
 		<div className="bg-[#222222] relative" onClick={(e) => {
 			e.stopPropagation()
 		}}>
-			<div className="absolute left-[-100px] w-fit top-6 bg-background flex flex-col border-primary/40 border-[0.1px] rounded-lg tracking-tight">
+			<div className="absolute left-[-100px] w-fit top-6 bg-background flex flex-col border-primary/40 border-[0.1px] rounded-lg tracking-tight animate-fade">
 				{
 					menuItems.map((ele, idx) => {
 						return (
 							<div className="px-4 py-2 text-nowrap hover:bg-[#333333] cursor-pointer text-sm" onClick={() => {
-								ele.onClickHandler()
-								setIsModalOpen(prev => {
-									return {
-										open: true,
-										title: ele.title
-									}
-								})
+								if (ele.onClickHandler) {
+									ele.onClickHandler()
+								} else {
+									setIsModalOpen(prev => {
+										return {
+											open: true,
+											title: ele.title
+										}
+									})
+								}
 								setIsMenuOpen(false)
-								setIsContextOpen({
-									open: false,
-									points: [0, 0]
+								setIsContextOpen(prev => {
+									return {
+										...prev,
+										open: false
+									}
 								})
 							}}>
 								<span>

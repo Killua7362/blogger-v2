@@ -18,6 +18,15 @@ const config: Config = {
 				primary: "#9dc0d8",
 				secondary: "#2a5979",
 				accent: "#5ea0cf",
+			},
+			animation: {
+				fade: "fadeOut 0.2s ease-in-out"
+			},
+			keyframes: {
+				fadeOut: {
+					'0%': { opacity: 0 },
+					'100%': { opacity: 1 }
+				}
 			}
 		}
 	},

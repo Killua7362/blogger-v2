@@ -13,7 +13,7 @@ const Modal = () => {
 	const [isModalOpen, setIsModalOpen] = useRecoilState(modalStateData)
 	return (
 		<Fragment>
-			<div className="text-white fixed z-30 min-h-screen w-screen backdrop-blur-2xl flex justify-center items-center" onClick={(e) => {
+			<div className="text-white fixed z-30 min-h-screen w-screen bg-background/70 flex justify-center items-center animate-fade" onClick={(e) => {
 				e.stopPropagation()
 				setIsModalOpen(prev => {
 					return {

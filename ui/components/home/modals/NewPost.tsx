@@ -1,13 +1,34 @@
 'use client'
 import { RxCross2 } from "react-icons/rx";
 import { useRecoilState } from 'recoil'
-import { modalStateData } from '@/atoms/states'
+import { modalStateData, allPosts, redisCommits } from '@/atoms/states'
+import { z } from 'zod'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod';
+import { v4 as uuidv4 } from 'uuid';
 
 const NewPostModal = () => {
 	const [isModalOpen, setIsModalOpen] = useRecoilState(modalStateData)
+	const [redisCommitsData, setRedisCommitsData] = useRecoilState(redisCommits)
+	const [allPostsData, setAllPostsData] = useRecoilState(allPosts)
+
+	const NewPostSchema = z.object({
+		title: z.string().min(1).max(30),
+		description: z.string().min(10).max(100),
+		tags: z.string().max(50)
+	})
+
+	type NewPostSchemaType = z.infer<typeof NewPostSchema>
+
+	const {
+		register,
+		handleSubmit,
+		formState: { errors }
+	} = useForm<NewPostSchemaType>({ resolver: zodResolver(NewPostSchema) })
+
 
 	return (
-		<div className="p-6 w-[20rem] border-primary/40 border-[0.1px] rounded-xl flex flex-col bg-background" onClick={(e) => {
+		<div className="p-6 w-[24rem] border-primary/40 border-[0.1px] rounded-xl flex flex-col bg-background " onClick={(e) => {
 			e.stopPropagation()
 		}}>
 			<div className="text-base font-semibold tracking-wide gap-y-1 flex flex-col relative">
@@ -23,27 +44,76 @@ const NewPostModal = () => {
 					</span>
 				</div>
 				<div className="text-xs text-text/70 font-normal">
-					Create new post by giving name and comma seperated tags and click on save.
+					Create new post by giving name,description and comma seperated tags and click on Create.
 				</div>
 			</div>
-			<div className="mt-3 flex flex-col items-end">
+			<form className="mt-3 flex flex-col items-end font-thin" onSubmit={handleSubmit((data) => {
+				let newId = uuidv4()
+				let payload = {
+					[newId]: {
+						title: data.title,
+						description: data.description,
+						content: "Empty Post",
+						pinned: false,
+						tags: data.tags,
+						createOn: "today",
+						updatedOn: "yesterday"
+					}
+				}
+
+				setRedisCommitsData(prev => {
+					return {
+						...prev,
+						[newId]: {
+							original: { ...payload[newId] },
+							history: [
+								{
+									action: "new_post",
+									payload: {
+										...payload[newId]
+									}
+								}
+							]
+						}
+					}
+				})
+
+				setIsModalOpen({ open: false, title: "" })
+			})}>
 				<div className="py-2 flex items-center justify-end text-md gap-x-4 w-full">
 					<div>
 						Title
 					</div>
-					<input type="text" className="py-2 w-9/12 rounded-md px-4 text-md bg-background text-text box-border focus-within:outline-none focus-within:border-primary/80  border-primary/40 border-[0.1px] " />
+					<fieldset className={`w-8/12  border-[0.1px] rounded-md ${errors.title ? "border-red-500 focus-within:border-red-300" : " focus-within:border-primary/80  border-primary/40"}`}>
+						<input type="text" className="w-full text-base bg-background text-text box-border focus-within:outline-none "
+							{...register("title")} />
+						{errors.title && <legend className="text-xs">{errors.title.message}</legend>}
+					</fieldset>
 				</div>
-
+				<div className="py-2 flex items-center justify-end text-md gap-x-4 w-full">
+					<div>
+						Description
+					</div>
+					<fieldset className={`w-8/12  border-[0.1px] rounded-md ${errors.description ? "border-red-500 focus-within:border-red-300" : " focus-within:border-primary/80  border-primary/40"}`}>
+						<input type="text" className="w-full text-base bg-background text-text box-border focus-within:outline-none "
+							{...register("description")} />
+						{errors.description && <legend className="text-xs">{errors.description.message}</legend>}
+					</fieldset>
+				</div>
 				<div className="py-2 flex items-center justify-end text-md gap-x-4 w-full">
 					<div>
 						Tags
 					</div>
-					<input type="text" className="py-2 w-9/12 rounded-md px-4 text-md bg-background text-text box-border focus-within:outline-none focus-within:border-primary/80  border-primary/40 border-[0.1px] " />
+					<fieldset className={`w-8/12  border-[0.1px] rounded-md ${errors.tags ? "border-red-500 focus-within:border-red-300" : " focus-within:border-primary/80  border-primary/40"}`}>
+						<input type="text" className="w-full text-base bg-background text-text box-border focus-within:outline-none "
+							{...register("tags")} />
+						{errors.tags && <legend className="text-xs">{errors.tags.message}</legend>}
+					</fieldset>
 				</div>
-				<div className="px-3 py-2 w-fit border-white bg-white text-background rounded-md text-md mt-2 cursor-pointer hover:bg-white/90 hover:text-background/90">
+				<button type="submit" className="px-3 py-2 w-fit border-white bg-white text-background rounded-md text-md mt-2 cursor-pointer hover:bg-white/90 hover:text-background/90 font-normal">
 					Create
-				</div>
-			</div>
+				</button>
+			</form>
 		</div >
 	)
 }

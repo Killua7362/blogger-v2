@@ -35,11 +35,13 @@ const BasePage = () => {
 				</div>
 				<PostsContainer filterConfig={{
 					headingName: "Featured",
-					postsCount: 5
+					postsCount: 5,
+					isPinned: true
 				}} />
 				<PostsContainer filterConfig={{
 					headingName: "Recent",
-					postsCount: 5
+					postsCount: 5,
+					isPinned: false
 				}} />
 				<div className="w-full flex justify-center items-center hover:gap-x-2 cursor-pointer text-lg uppercase">
 					<div>

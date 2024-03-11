@@ -4,7 +4,7 @@ import { HiOutlineDotsVertical } from "react-icons/hi";
 import { useState, useEffect } from 'react'
 
 import { useRecoilState } from 'recoil'
-import { contextMenuState, navbarMenuState, modalStateData} from '@/atoms/states'
+import { contextMenuState, navbarMenuState, modalStateData, allPosts, redisCommits } from '@/atoms/states'
 import DialogBox from '@/ui/common/dialogbox'
 
 import { usePathname } from 'next/navigation'
@@ -14,6 +14,26 @@ const NavBar = ({ isHome }: { isHome: boolean }) => {
 	const [isMenuOpen, setIsMenuOpen] = useRecoilState(navbarMenuState)
 	const [isModalOpen, setIsModalOpen] = useRecoilState(modalStateData)
 	const [contextMenuMetaData, setContextMenuMetaData] = useRecoilState(contextMenuState)
+
+	const [redisCommitsData, setRedisCommitsData] = useRecoilState(redisCommits)
+	const [allPostsData, setAllPostsData] = useRecoilState(allPosts)
+
+	useEffect(() => {
+		let result = {}
+		for (let id in redisCommitsData) {
+			if (redisCommitsData[id].history.length !== 0) {
+				result[id] = (redisCommitsData[id].history.slice(-1)[0].payload)
+			} else {
+				result[id] = redisCommitsData[id].original
+			}
+		}
+		setAllPostsData(prev => {
+			return {
+				...prev,
+				...result
+			}
+		})
+	}, [redisCommitsData])
 
 	return (
 		<Fragment>
@@ -30,7 +50,12 @@ const NavBar = ({ isHome }: { isHome: boolean }) => {
 					</div>
 					<a className="text-xl flex items-center justify-center cursor-pointer hover:text-white/80 hover:bg-[#333333]/30 bg-background px-3 py-1 rounded-xl border-primary/40 border-[0.1px]" onClick={(e) => {
 						e.stopPropagation()
-						setContextMenuMetaData({ open: false, points: [0, 0] })
+						setContextMenuMetaData(prev => {
+							return {
+								...prev,
+								open: false
+							}
+						})
 						isMenuOpen ? setIsMenuOpen(false) : setIsMenuOpen(true)
 					}} >
 						<span className="text-sm tracking-wider uppercase">

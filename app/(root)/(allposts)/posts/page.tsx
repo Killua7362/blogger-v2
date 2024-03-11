@@ -25,7 +25,7 @@ const AllPosts = () => {
 				</div>
 			</div>
 			<PostsContainer filterConfig={{
-				postsCount: 5
+				isPinned: false
 			}} />
 		</Fragment>
 	)

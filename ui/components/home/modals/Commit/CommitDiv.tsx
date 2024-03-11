@@ -1,26 +1,54 @@
+'use client'
 import { IoTrashBinSharp } from "react-icons/io5";
 
-const CommitDiv = () => {
+import { useRecoilState } from 'recoil'
+import { redisCommits } from '@/atoms/states'
+
+const CommitDiv = ({ tempDB, setTempDB }: { tempDB: any, setTempDB: any }) => {
+
 	return (
 		<div className="w-full h-full border-primary/30 border-[0.1px] rounded-xl tracking-wide font-normal text-md overflow-y-auto">
-			{new Array(15).fill(0).map(() => {
-				return (
-					<div className="p-4 m-2 rounded-md flex gap-x-4 items-center divide-x-[0.1px] divide-primary/30">
-						<IoTrashBinSharp className="text-2xl text-red-500" />
-						<div className="pl-4 flex sm:flex-row flex-col justify-between items-center w-full gap-y-2 divide-x-[0.1px] divide-primary/30">
-							<div className="text-lg">
-								Title of the post
+			{Object.keys(tempDB).map((key, _) => {
+				return tempDB[key].history.length !== 0 && (
+					<div className="p-4 m-2 rounded-md flex gap-x-4 gap-y-2 justify-between px-10 border-white/30 border-[0.1px] text-lg">
+						<div>
+							<div>
+								{tempDB[key].original.title}
 							</div>
-							<div className="flex sm:flex-col gap-x-2 text-sm pl-4">
-								<div>Action: Delete</div>
-								<div>Updated On: Today</div>
-								<div>Created On: Yesterday</div>
+							<div className="text-sm text-white/70">
+								CreatedOn: {tempDB[key].original.createdOn}
 							</div>
+						</div>
+						<div className="flex flex-col gap-y-2">
+							{
+								Array.from(tempDB[key].history).reverse().map((e, i) => {
+									return (
+										<div className="flex items-center gap-x-4">
+											<IoTrashBinSharp className="text-red-500 hover:text-red-400 cursor-pointer"
+												onClick={() => {
+													setTempDB(prev => {
+														return {
+															...prev,
+															[key]: {
+																...prev[key],
+																history: [...Array.from(tempDB[key].history).splice(0, tempDB[key].history.length - i - 1)]
+															}
+														}
+													})
+												}}
+											/>
+											<div>
+												{e.action}
+											</div>
+										</div>
+									)
+								})
+							}
 						</div>
 					</div>
 				)
 			})}
-		</div>
+		</div >
 	)
 }
 export default CommitDiv

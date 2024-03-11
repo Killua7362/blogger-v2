@@ -5,7 +5,7 @@ import NavBar from "@/ui/layout/navbar";
 import Footer from "@/ui/layout/footer";
 
 import { useRecoilState } from 'recoil'
-import { navbarMenuState, contextMenuState } from '@/atoms/states'
+import { navbarMenuState, redisCommits, contextMenuState, modalStateData, allPosts } from '@/atoms/states'
 
 import { usePathname, useSearchParams } from 'next/navigation'
 
@@ -16,6 +16,8 @@ const RootLayout = (
 	const [contextMenuMetaData, setContextMenuMetaData] = useRecoilState(contextMenuState)
 	const [isRender, setIsRender] = useState(false)
 	const [isHome, setIsHome] = useState(true)
+	const [isModalOpen, setIsModalOpen] = useRecoilState(modalStateData)
+
 	const pathname = usePathname()
 
 	useEffect(() => {
@@ -29,15 +31,22 @@ const RootLayout = (
 		}
 	}, [pathname])
 
+
 	return isRender && (
-		<div className="min-h-screen flex flex-col items-center justify-between"
+		<div className={`min-h-screen flex flex-col items-center justify-between w-full relative ${isModalOpen.open ? "fixed" : ""}`}
 			onClick={() => {
 				setIsMenuOpen(false)
-				setContextMenuMetaData({ open: false, points: [0, 0] })
+				setContextMenuMetaData(prev => {
+					return { ...prev, open: false }
+				}
+				)
 			}}
 			onContextMenu={() => {
 				setIsMenuOpen(false)
-				setContextMenuMetaData({ open: false, points: [0, 0] })
+				setContextMenuMetaData(prev => {
+					return { ...prev, open: false }
+				}
+				)
 			}}
 		>
 			<NavBar isHome={isHome} />

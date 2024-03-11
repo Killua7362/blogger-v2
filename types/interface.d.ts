@@ -1,9 +1,10 @@
 interface contextMenuData {
 	open: boolean,
-	points: number[]
+	points: number[],
+	id: string
 }
 
 interface menuItems {
 	title: string,
-	onClickHandler: onClickHandler
+	onClickHandler?: onClickHandler
 }

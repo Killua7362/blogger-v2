@@ -1,15 +1,26 @@
 'use client'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { RxCross2 } from "react-icons/rx";
 import { useRecoilState } from 'recoil'
-import { modalStateData } from '@/atoms/states'
+import { modalStateData, redisCommits } from '@/atoms/states'
 
 import CommitDiv from '@/ui/components/home/modals/Commit/CommitDiv'
 
 const CommitModal = () => {
 	const [isModalOpen, setIsModalOpen] = useRecoilState(modalStateData)
+	const [redisCommitsData, setRedisCommitsData] = useRecoilState(redisCommits)
 
-	return (
+	const [staged, setStaged] = useState(false)
+	const [tempDB, setTempDB] = useState({})
+	const [isRender, setIsRender] = useState(false)
+
+	useEffect(() => {
+		setTempDB(redisCommitsData)
+		if (!isRender) {
+			setIsRender(true)
+		}
+	}, [])
+	return isRender && (
 		<div className="p-6 overflow-hidden w-full sm:w-10/12 xl:w-7/12 h-[40rem] border-primary/40 border-[0.1px] rounded-xl flex flex-col bg-background flex flex-col justify-between items-end" onClick={(e) => {
 			e.stopPropagation()
 		}}>
@@ -27,34 +38,41 @@ const CommitModal = () => {
 							title: ""
 						})
 					}}>
-						<RxCross2 />
+						<RxCross2 onClick={() => {
+							setIsModalOpen({ open: false, title: "" })
+						}} />
 					</span>
 				</div>
 			</div>
 			<div className='w-full h-[80%]'>
-				<CommitDiv />
+				<CommitDiv tempDB={tempDB} setTempDB={setTempDB} />
 			</div>
 			<div className='flex justify-between w-full'>
 				<div className="flex gap-x-4">
-					<div className="px-3 py-2 w-fit border-white bg-white text-background rounded-md text-md mt-2 cursor-pointer hover:bg-white/90 hover:text-background/90">
-						Unstage
+					<div className="px-3 py-2 w-fit border-white bg-white text-background rounded-md text-md mt-2 cursor-pointer hover:bg-white/90 hover:text-background/90"
+						onClick={() => {
+							setStaged(staged ? false : true)
+						}}
+					>
+						{staged ? "Ustage" : "Stage"}
 					</div>
 					<div className="px-3 py-2 w-fit border-white bg-white text-background rounded-md text-md mt-2 cursor-pointer hover:bg-white/90 hover:text-background/90" onClick={() => {
-						setIsModalOpen({ open: false, title: "" })
 					}}>
-						Commit
+						Clear
 					</div>
 				</div>
 				<div className="flex gap-x-4">
-					<div className="px-3 py-2 w-fit border-white bg-white text-background rounded-md text-md mt-2 cursor-pointer hover:bg-white/90 hover:text-background/90" onClick={() => {
+					<div className={`px-3 py-2 w-fit border-white text-background rounded-md text-md mt-2 cursor-pointer hover:bg-white/90 hover:text-background/90 ${staged ? "bg-red-500" : "bg-white"}`} onClick={() => {
+						if (staged === true) {
+
+						} else {
+							setRedisCommitsData(prev => {
+								return { ...tempDB }
+							})
+						}
 						setIsModalOpen({ open: false, title: "" })
 					}}>
-						Cancel
-					</div>
-					<div className="px-3 py-2 w-fit border-white bg-white text-background rounded-md text-md mt-2 cursor-pointer hover:bg-white/90 hover:text-background/90" onClick={() => {
-						setIsModalOpen({ open: false, title: "" })
-					}}>
-						Confirm
+						{staged ? "Push" : "Save"}
 					</div>
 				</div>
 			</div>

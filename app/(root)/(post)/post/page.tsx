@@ -2,7 +2,7 @@
 
 import { Fragment, useEffect, useState } from 'react'
 import '@/styles/markdown-styles.css'
-import { useSearchParams,redirect} from 'next/navigation'
+import { useSearchParams, redirect } from 'next/navigation'
 
 import { MarkdownComponents } from '@/ui/components/posts/markdown-components'
 
@@ -16,13 +16,14 @@ import rehypeFormat from 'rehype-format'
 import { notFound } from 'next/navigation'
 
 import { useRecoilState } from 'recoil'
-import { allPosts } from '@/atoms/states'
+import { allPosts, contextMenuState } from '@/atoms/states'
 
 const Post = () => {
 	const [isRender, setIsRender] = useState(false)
 	const searchParams = useSearchParams()
 	const [allPostsData, setAllPostsData] = useRecoilState(allPosts)
-	const [content, setContent] = useState("")
+	const [content, setContent] = useState({})
+	const [isContextOpen, setIsContextOpen] = useRecoilState(contextMenuState)
 
 	useEffect(() => {
 		let postId = searchParams.get('id')
@@ -30,30 +31,45 @@ const Post = () => {
 			redirect('/')
 			notFound()
 		}
-		setContent(allPostsData[postId].content)
+		setIsContextOpen(prev => {
+			return {
+				...prev,
+				id: postId
+			}
+		})
 		setIsRender(true)
 	}, [])
+
+	useEffect(() => {
+		let postId = searchParams.get('id')
+		if (Object.keys(allPostsData[postId]).length === 0) {
+			setIsRender(false)
+			redirect('/')
+		}
+		setContent(allPostsData[postId])
+	}, [allPostsData])
 
 	return isRender && (
 		<Fragment>
 			<div className='md:px-8 px-2 mt-4 md:mt-8 flex flex-col md:gap-y-2 gap-y-3'>
 				<div className='text-2xl text-justify tracking-wide'>
-					Adverse affect of using linux instead of windows in long term
+					{content.title}
 				</div>
 				<div className='text-base font-thin'>
-					description
+					{content.description}
 				</div>
 				<div className='flex justify-between'>
 					<div className='text-base font-thin'>
-						Today
+						{content.updatedOn}
 					</div>
 					<div className='flex gap-x-2'>
-						<div className='text-xs bg-secondary p-1 rounded-xl px-3'>
-							ML
-						</div>
-						<div className='text-xs bg-secondary p-1 rounded-xl px-3'>
-							WEB DEV
-						</div>
+						{content.tags.split(',').map((e, _) => {
+							return (
+								<div className='text-xs bg-secondary p-1 rounded-xl px-3'>
+									{e}
+								</div>
+							)
+						})}
 					</div>
 				</div>
 				<div className='text-base text-justify text-white/80 markdown-class'>
@@ -62,7 +78,7 @@ const Post = () => {
 						remarkPlugins={[remarkGfm]}
 						rehypePlugins={[rehypeFormat, rehypeSanitize]}
 						unwrapDisallowed
-					>{content}</Markdown>
+					>{content.content}</Markdown>
 				</div>
 			</div>
 		</Fragment >

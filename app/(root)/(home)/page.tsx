@@ -37,12 +37,14 @@ const BasePage = () => {
 				<PostsContainer filterConfig={{
 					headingName: "Featured",
 					postsCount: 5,
-					isPinned: true
+					isPinned: true,
+					sortType: "modified date"
 				}} />
 				<PostsContainer filterConfig={{
 					headingName: "Recent",
 					postsCount: 5,
-					isPinned: false
+					isPinned: false,
+					sortType: "modified date"
 				}} />
 				<div className="w-full flex justify-center items-center hover:gap-x-2 cursor-pointer text-lg uppercase">
 					<Link href={{ pathname: "/posts" }} className='text-white no-underline'>

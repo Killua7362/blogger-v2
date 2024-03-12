@@ -35,7 +35,7 @@ export const allPosts = atom({
 	key: "allPosts",
 	default: {
 		"1": {
-			title: "title",
+			title: "b",
 			description: "description",
 			content: "Empty Post",
 			pinned: false,
@@ -44,7 +44,7 @@ export const allPosts = atom({
 			updatedOn: "yesterday"
 		},
 		"2": {
-			title: "title",
+			title: "a",
 			description: "description",
 			content: "Empty Post",
 			pinned: true,

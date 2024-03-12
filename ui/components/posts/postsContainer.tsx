@@ -19,6 +19,31 @@ const customFilter = (data: allPosts, filterConfig: filterConfig) => {
 	return data;
 }
 
+const sortFunction = (data: Entries<allPosts>, filterConfig: filterConfig) => {
+	if (filterConfig?.sortType === "created date") {
+		data = data.sort((a, b) => {
+			return new Date(a[1]?.createdOn) - new Date(b[1]?.createdOn)
+		})
+	} else if (filterConfig?.sortType === "name") {
+		data = data.sort((a, b) => {
+			return (a[1]?.title || "").localeCompare(b[1]?.title || "")
+		})
+	} else if (filterConfig?.sortType === "word count") {
+		data = data.sort((a, b) => {
+			return (a[1]?.content || "").length - (b[1]?.content || "").length
+		})
+	} else {
+		data = data.sort((a, b) => {
+			return new Date(a[1]?.updatedOn) - new Date(b[1]?.updatedOn)
+		})
+	}
+
+	if (filterConfig?.reverse) {
+		return data.reverse();
+	}
+	return data;
+}
+
 const PostsContainer = ({ filterConfig }: { filterConfig: filterConfig }) => {
 	const [contextMenuMetaData, setContextMenuMetaData] = useRecoilState(contextMenuState)
 	const [isMenuOpen, setIsMenuOpen] = useRecoilState(navbarMenuState)
@@ -39,7 +64,7 @@ const PostsContainer = ({ filterConfig }: { filterConfig: filterConfig }) => {
 			}
 			<div className="flex flex-col p-2">
 				{
-					Object.entries(customFilter(allPostsData, filterConfig)).slice(0, filterConfig.postsCount || Object.keys(allPostsData).length).map(entry => entry[0]).map((id, idx) => {
+					sortFunction(Object.entries(customFilter(allPostsData, filterConfig)).slice(0, filterConfig.postsCount || Object.keys(allPostsData).length), filterConfig).map(entry => entry[0]).map((id, idx) => {
 						return (allPostsData[id].title) && (
 							<Link href={{ pathname: "/post", query: { id: id } }} className='text-white no-underline' key={`postContainer+${id}+${idx}`}>
 								<div className='flex flex-col gap-y-1 border-white/30 rounded-xl md:p-6 md:py-4 p-3' onContextMenu={(e) => {

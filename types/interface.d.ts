@@ -1,3 +1,5 @@
+import { PreviewType } from "@uiw/react-md-editor";
+
 interface contextMenuData {
 	open: boolean;
 	points: number[];
@@ -43,13 +45,19 @@ interface redisCommits {
 	[id: string]: redisItems
 }
 
+type sortType = 'created date' | 'modified date' | 'name' | 'word count'
+
 interface filterConfig {
 	headingName?: string;
 	postsCount?: number;
 	isPinned?: boolean;
+	searchPrefix?: string;
+	sortType?: sortType;
+	reverse?: boolean;
 }
 
 interface previewButton {
 	title: string;
 	value: PreviewType;
 }
+

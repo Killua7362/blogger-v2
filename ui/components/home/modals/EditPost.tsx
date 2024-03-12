@@ -7,21 +7,21 @@ import MDEditor from '@uiw/react-md-editor';
 
 const EditPost = () => {
 	const [isModalOpen, setIsModalOpen] = useRecoilState(modalStateData)
-	const [previewButton, setPreviewButton] = useState({
+	const [previewButton, setPreviewButton] = useState<previewButton>({
 		title: "Preview",
 		value: "edit"
 	})
-	const [content, setContent] = useState("")
+	const [content, setContent] = useState<string>()
 
 	const [redisCommitsData, setRedisCommitsData] = useRecoilState(redisCommits)
 	const [allPostsData, setAllPostsData] = useRecoilState(allPosts)
 	const [isContextMenuOpen, setIsContextMenuOpen] = useRecoilState(contextMenuState)
-	const [contentData, setContentData] = useState({})
+	const [contentData, setContentData] = useState<Post>()
 
 	const [isRender, setIsRender] = useState(false)
 
 	useEffect(() => {
-		setContent(allPostsData[isContextMenuOpen.id].content)
+		setContent(allPostsData[isContextMenuOpen.id]?.content! || "")
 		setContentData(allPostsData[isContextMenuOpen.id])
 		setIsRender(true)
 	}, [])
@@ -32,7 +32,7 @@ const EditPost = () => {
 		}}>
 			<div className='w-full flex justify-between items-center'>
 				<div className='text-xl'>
-					{contentData.title}
+					{contentData?.title}
 				</div>
 				<span className="text-lg cursor-pointer hover:text-white/70" onClick={() => {
 					setIsModalOpen({

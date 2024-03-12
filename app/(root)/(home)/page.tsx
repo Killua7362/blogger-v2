@@ -28,7 +28,7 @@ const BasePage = () => {
 						<Linx />
 					</div>
 					<div className="flex flex-col items-center justify-center gap-y-2">
-						<Image unoptimized src="/images/grimoire.webp" width={0} height={0} className='h-full w-full md:h-[150px] md:w-[200px] ' alt="Black grimoire in black clover" />
+						<Image priority unoptimized src="/images/grimoire.webp" width={0} height={0} className='h-full w-full md:h-[150px] md:w-[200px] ' alt="Black grimoire in black clover" />
 						<span className="text-sm tracking-wide">
 							Reference: Black Clover
 						</span>

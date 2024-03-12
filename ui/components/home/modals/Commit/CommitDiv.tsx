@@ -4,13 +4,13 @@ import { IoTrashBinSharp } from "react-icons/io5";
 import { useRecoilState } from 'recoil'
 import { redisCommits } from '@/atoms/states'
 
-const CommitDiv = ({ tempDB, setTempDB }: { tempDB: any, setTempDB: any }) => {
+const CommitDiv = ({ tempDB, setTempDB }: { tempDB: redisCommits, setTempDB: React.Dispatch<React.SetStateAction<redisCommits>> }) => {
 
 	return (
 		<div className="w-full h-full border-primary/30 border-[0.1px] rounded-xl tracking-wide font-normal text-md overflow-y-auto">
 			{Object.keys(tempDB).map((key, _) => {
 				return tempDB[key].history.length !== 0 && (
-					<div className="p-4 m-2 rounded-md flex gap-x-4 gap-y-2 justify-between px-10 border-white/30 border-[0.1px] text-lg">
+					<div className="p-4 m-2 rounded-md flex gap-x-4 gap-y-2 justify-between px-10 border-white/30 border-[0.1px] text-lg" id={`commitItems${key}`}>
 						<div>
 							<div>
 								{tempDB[key].original.title}
@@ -23,7 +23,7 @@ const CommitDiv = ({ tempDB, setTempDB }: { tempDB: any, setTempDB: any }) => {
 							{
 								Array.from(tempDB[key].history).reverse().map((e, i) => {
 									return (
-										<div className="flex items-center gap-x-4">
+										<div className="flex items-center gap-x-4" key={`commitActions+${key}+${i}`}>
 											<IoTrashBinSharp className="text-red-500 hover:text-red-400 cursor-pointer"
 												onClick={() => {
 													setTempDB(prev => {

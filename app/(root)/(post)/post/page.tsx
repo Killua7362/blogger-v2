@@ -22,14 +22,14 @@ const Post = () => {
 	const [isRender, setIsRender] = useState(false)
 	const searchParams = useSearchParams()
 	const [allPostsData, setAllPostsData] = useRecoilState(allPosts)
-	const [content, setContent] = useState({})
+	const [content, setContent] = useState<Post>()
 	const [isContextOpen, setIsContextOpen] = useRecoilState(contextMenuState)
 
 	useEffect(() => {
-		let postId = searchParams.get('id')
-		if (!(postId in allPostsData)) {
+		let postId = (searchParams.get('id') || '-1')
+		if (!(postId in allPostsData) || Object.keys(allPostsData[postId]).length === 0) {
+			setIsRender(false)
 			redirect('/')
-			notFound()
 		}
 		setIsContextOpen(prev => {
 			return {
@@ -37,35 +37,29 @@ const Post = () => {
 				id: postId
 			}
 		})
-		setIsRender(true)
-	}, [])
-
-	useEffect(() => {
-		let postId = searchParams.get('id')
-		if (Object.keys(allPostsData[postId]).length === 0) {
-			setIsRender(false)
-			redirect('/')
-		}
 		setContent(allPostsData[postId])
-	}, [allPostsData])
+		if (!isRender) {
+			setIsRender(true)
+		}
+	}, [allPostsData, isRender, searchParams])
 
 	return isRender && (
 		<Fragment>
 			<div className='md:px-8 px-2 mt-4 md:mt-8 flex flex-col md:gap-y-2 gap-y-3'>
 				<div className='text-2xl text-justify tracking-wide'>
-					{content.title}
+					{content?.title}
 				</div>
 				<div className='text-base font-thin'>
-					{content.description}
+					{content?.description}
 				</div>
 				<div className='flex justify-between'>
 					<div className='text-base font-thin'>
-						{content.updatedOn}
+						{content?.updatedOn}
 					</div>
 					<div className='flex gap-x-2'>
-						{content.tags.split(',').map((e, _) => {
+						{(content?.tags || "").split(',').map((e, i) => {
 							return (
-								<div className='text-xs bg-secondary p-1 rounded-xl px-3'>
+								<div className='text-xs bg-secondary p-1 rounded-xl px-3' key={`${searchParams.get('id')}+${i}`}>
 									{e}
 								</div>
 							)
@@ -78,7 +72,7 @@ const Post = () => {
 						remarkPlugins={[remarkGfm]}
 						rehypePlugins={[rehypeFormat, rehypeSanitize]}
 						unwrapDisallowed
-					>{content.content}</Markdown>
+					>{content?.content}</Markdown>
 				</div>
 			</div>
 		</Fragment >

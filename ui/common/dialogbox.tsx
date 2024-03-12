@@ -3,8 +3,9 @@ import { useState, useEffect } from 'react'
 import { useRecoilState } from 'recoil'
 import { navbarMenuState, modalStateData, contextMenuState, signInState, adminState, redisCommits, allPosts } from '@/atoms/states'
 import { usePathname } from 'next/navigation'
+import { v4 as uuidv4 } from 'uuid';
 
-const DialogBox = ({ isModal, isHome, extraActions, id }: { isModal: boolean, isHome: boolean, extraActions: menuItems[], id: number }) => {
+const DialogBox = ({ isModal, isHome, extraActions}: { isModal: boolean, isHome: boolean, extraActions: menuItems[] }) => {
 	const [isRender, setIsRender] = useState(false)
 	const [isMenuOpen, setIsMenuOpen] = useRecoilState(navbarMenuState)
 	const [isContextOpen, setIsContextOpen] = useRecoilState(contextMenuState)
@@ -27,15 +28,6 @@ const DialogBox = ({ isModal, isHome, extraActions, id }: { isModal: boolean, is
 	}
 
 	const PinHandler = () => {
-		let payload = {}
-		payload = {
-			action: allPostsData[isContextOpen.id].pinned === true ? "unpin_post" : "pin_post",
-			payload: {
-				...allPostsData[isContextOpen.id],
-				pinned: allPostsData[isContextOpen.id] === true ? false : true
-			}
-
-		}
 		setRedisCommitsData(prev => {
 			return {
 				...prev,
@@ -43,7 +35,13 @@ const DialogBox = ({ isModal, isHome, extraActions, id }: { isModal: boolean, is
 					original: { ...(prev[isContextOpen.id]?.original || allPostsData[isContextOpen.id]) },
 					history: [
 						...(prev[isContextOpen.id]?.history || []),
-						payload
+						{
+							action: allPostsData[isContextOpen.id].pinned === true ? "unpin_post" : "pin_post",
+							payload: {
+								...allPostsData[isContextOpen.id],
+								pinned: allPostsData[isContextOpen.id].pinned === true ? false : true
+							}
+						}
 					]
 				}
 			}
@@ -126,18 +124,18 @@ const DialogBox = ({ isModal, isHome, extraActions, id }: { isModal: boolean, is
 	useEffect(() => {
 		if (isModal) {
 			if (isAdmin) {
-				setMenuItems([...PostItemsAdmin, ...extraActions])
+				setMenuItems([...PostItemsNormal, ...PostItemsAdmin, ...extraActions])
 			} else {
-				setMenuItems([...extraActions])
+				setMenuItems([...PostItemsNormal, ...extraActions])
 			}
 		} else {
 			if (isSignedIn) {
-				setMenuItems([...NavBarMenuItemsAfter])
+				setMenuItems([...PostItemsNormal, ...NavBarMenuItemsAfter])
 				if (isAdmin) {
 					if (isHome) {
 						setMenuItems([...NavBarMenuItemsHomeAdmin, ...NavBarMenuItemsAfter])
 					} else {
-						setMenuItems([...PostItemsAdmin, ...NavBarMenuItemsAfter])
+						setMenuItems([...PostItemsNormal, ...PostItemsAdmin, ...NavBarMenuItemsAfter])
 					}
 				}
 			} else {
@@ -155,7 +153,7 @@ const DialogBox = ({ isModal, isHome, extraActions, id }: { isModal: boolean, is
 				{
 					menuItems.map((ele, idx) => {
 						return (
-							<div className="px-4 py-2 text-nowrap hover:bg-[#333333] cursor-pointer text-sm" onClick={() => {
+							<div className="px-4 py-2 text-nowrap hover:bg-[#333333] cursor-pointer text-sm" key={`${isModal ? "modal" : "notmodal"}menuItems${idx}`} onClick={() => {
 								if (ele.onClickHandler) {
 									ele.onClickHandler()
 								} else {

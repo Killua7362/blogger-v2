@@ -29,7 +29,7 @@ const RootLayout = (
 		if (!isRender) {
 			setIsRender(true)
 		}
-	}, [pathname])
+	}, [pathname, isRender])
 
 
 	return isRender && (

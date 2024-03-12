@@ -5,12 +5,12 @@ const { persistAtom } = recoilPersist()
 
 export const navbarMenuState = atom({
 	key: 'navbarMenuState',
-	default: false,
+	default: false as boolean,
 })
 
 export const contextMenuState = atom({
 	key: 'contextMenuState',
-	default: { open: false, points: [0, 0], id: "" }
+	default: { open: false, points: [0, 0], id: "" } as contextMenuData
 })
 
 export const modalStateData = atom({
@@ -18,17 +18,17 @@ export const modalStateData = atom({
 	default: {
 		open: false,
 		title: ""
-	}
+	} as modalStateData
 })
 
 export const adminState = atom({
 	key: 'adminState',
-	default: true
+	default: true as boolean
 })
 
 export const signInState = atom({
 	key: 'signInState',
-	default: true
+	default: true as boolean
 })
 
 export const allPosts = atom({
@@ -44,7 +44,6 @@ export const allPosts = atom({
 			updatedOn: "yesterday"
 		},
 		"2": {
-			id: "2",
 			title: "title",
 			description: "description",
 			content: "Empty Post",
@@ -53,12 +52,12 @@ export const allPosts = atom({
 			createdOn: "today",
 			updatedOn: "yesterday"
 		},
-	},
+	} as allPosts
 })
 
 export const redisCommits = atom({
 	key: "redisCommits",
 	default: {
-	},
+	} as redisCommits
 })
 

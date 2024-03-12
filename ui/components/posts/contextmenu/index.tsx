@@ -12,7 +12,7 @@ const ContextMenu = () => {
 	return <div className="z-30 absolute" style={{ left: contextMenuMetaData.points[0] + 100, top: contextMenuMetaData.points[1] - 33 }} onClick={(e) => {
 		e.stopPropagation()
 	}}>
-		<DialogBox isModal={true} isHome={false} extraActions={[]} id={-1} />
+		<DialogBox isModal={true} isHome={false} extraActions={[]} />
 	</div>
 }
 export default ContextMenu

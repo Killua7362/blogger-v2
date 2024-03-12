@@ -10,6 +10,9 @@ import DialogBox from '@/ui/common/dialogbox'
 import { usePathname } from 'next/navigation'
 import Modal from '@/ui/components/home/modals'
 
+import Link from 'next/link';
+import { redirect } from 'next/navigation';
+
 const NavBar = ({ isHome }: { isHome: boolean }) => {
 	const [isMenuOpen, setIsMenuOpen] = useRecoilState(navbarMenuState)
 	const [isModalOpen, setIsModalOpen] = useRecoilState(modalStateData)
@@ -19,7 +22,7 @@ const NavBar = ({ isHome }: { isHome: boolean }) => {
 	const [allPostsData, setAllPostsData] = useRecoilState(allPosts)
 
 	useEffect(() => {
-		let result = {}
+		let result: allPosts = {}
 		for (let id in redisCommitsData) {
 			if (redisCommitsData[id].history.length !== 0) {
 				result[id] = (redisCommitsData[id].history.slice(-1)[0].payload)
@@ -43,11 +46,11 @@ const NavBar = ({ isHome }: { isHome: boolean }) => {
 			}
 			<div className="z-20 2xl:w-6/12 xl:w-7/12 lg:w-8/12 w-10/12 absolute h-0 border-primary/40 flex items-center justify-center py-12 border-b-[0.1px] bg-background">
 				<div className="w-full flex justify-between items-center">
-					<div>
+					<Link href="/" className='no-underline text-white'>
 						<div className="uppercase text-3xl font-medium tracking-wide">
 							Akshay Bhat
 						</div>
-					</div>
+					</Link>
 					<a className="text-xl flex items-center justify-center cursor-pointer hover:text-white/80 hover:bg-[#333333]/30 bg-background px-3 py-1 rounded-xl border-primary/40 border-[0.1px]" onClick={(e) => {
 						e.stopPropagation()
 						setContextMenuMetaData(prev => {

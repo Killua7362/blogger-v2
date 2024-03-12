@@ -6,8 +6,8 @@ import { useRecoilState } from 'recoil'
 import { contextMenuState, navbarMenuState, signInState, allPosts } from '@/atoms/states'
 import Link from 'next/link'
 
-const customFilter = (data, filterConfig) => {
-	let result = {}
+const customFilter = (data: allPosts, filterConfig: filterConfig) => {
+	let result: allPosts = {}
 	if (filterConfig.isPinned) {
 		for (let key in data) {
 			if (data[key]?.pinned) {
@@ -19,7 +19,7 @@ const customFilter = (data, filterConfig) => {
 	return data;
 }
 
-const PostsContainer = ({ filterConfig }: { filterConfig: any }) => {
+const PostsContainer = ({ filterConfig }: { filterConfig: filterConfig }) => {
 	const [contextMenuMetaData, setContextMenuMetaData] = useRecoilState(contextMenuState)
 	const [isMenuOpen, setIsMenuOpen] = useRecoilState(navbarMenuState)
 	const [isSignIn, setIsSignIn] = useRecoilState(signInState)
@@ -39,9 +39,9 @@ const PostsContainer = ({ filterConfig }: { filterConfig: any }) => {
 			}
 			<div className="flex flex-col p-2">
 				{
-					Object.entries(customFilter(allPostsData, filterConfig)).slice(0, filterConfig.postCount || allPostsData.length).map(entry => entry[0]).map((id, _) => {
+					Object.entries(customFilter(allPostsData, filterConfig)).slice(0, filterConfig.postsCount || Object.keys(allPostsData).length).map(entry => entry[0]).map((id, idx) => {
 						return (allPostsData[id].title) && (
-							<Link href={{ pathname: "/post", query: { id: id } }} className='text-white no-underline'>
+							<Link href={{ pathname: "/post", query: { id: id } }} className='text-white no-underline' key={`postContainer+${id}+${idx}`}>
 								<div className='flex flex-col gap-y-1 border-white/30 rounded-xl md:p-6 md:py-4 p-3' onContextMenu={(e) => {
 									if (isSignIn) {
 										e.preventDefault()
@@ -64,14 +64,14 @@ const PostsContainer = ({ filterConfig }: { filterConfig: any }) => {
 									</div>
 									<div className='flex gap-x-2'>
 										{
-											(allPostsData[id].tags.split(',')).map((e, _) => {
+											((allPostsData[id]?.tags || "").split(',')).map((e, i) => {
 												return e.length !== 0 ? (
-													<div className='text-xs bg-secondary p-1 rounded-xl px-3'>
+													<div className='text-xs bg-secondary p-1 rounded-xl px-3' key={`postTags+${id}+${i}`}>
 														{e}
 													</div>
 
 												) : (
-													<div className='text-xs bg-secondary p-1 rounded-xl px-3'>
+													<div className='text-xs bg-secondary p-1 rounded-xl px-3' key={`postTags+${id}+${i}`}>
 														No Tag
 													</div>
 												)
@@ -82,7 +82,7 @@ const PostsContainer = ({ filterConfig }: { filterConfig: any }) => {
 										{allPostsData[id].description}
 									</div>
 									<div className='text-white/80 font-thin'>
-										word count: {allPostsData[id].content.length}
+										word count: {allPostsData[id]?.content?.length}
 									</div>
 								</div>
 							</Link>

@@ -4,6 +4,10 @@ import PostsContainer from '@/ui/components/posts/postsContainer'
 import { FcSearch } from "react-icons/fc";
 import { AiOutlineArrowUp, AiOutlineArrowDown } from "react-icons/ai";
 
+
+import { useRecoilState } from 'recoil'
+import { modalStateData } from '@/atoms/states';
+
 const AllPosts = () => {
 	const [filterConfig, setFilterConfig] = useState<filterConfig>({
 		isPinned: false,
@@ -13,6 +17,8 @@ const AllPosts = () => {
 	})
 
 	const [sortActive, setSortActive] = useState(false)
+	const [isModalOpen, setIsModalOpen] = useRecoilState(modalStateData)
+
 	return (
 		<Fragment>
 			<div className='md:px-8 py-0 p-5 flex flex-col gap-y-4 items-center'>
@@ -27,15 +33,24 @@ const AllPosts = () => {
 						setFilterConfig(prev => {
 							return {
 								...prev,
-								searchPrefix:(e.target.value || "")
+								searchPrefix: (e.target.value || "")
 							}
 						})
 					}} />
 				</div>
 				<div className='flex gap-x-2 w-full items-center'>
-					<div className='p-1 bg-background hover:bg-[#333333]/30 px-3 py-1 rounded-xl border-primary/30 border-[0.1px] cursor-pointer'>
-						Filter
-					</div>
+					{
+						// <div className='p-1 bg-background hover:bg-[#333333]/30 px-3 py-1 rounded-xl border-primary/30 border-[0.1px] cursor-pointer' onClick={() => {
+						// 	setIsModalOpen(prev => {
+						// 		return {
+						// 			open: true,
+						// 			title: "filter"
+						// 		}
+						// 	})
+						// }}>
+						// 	Filter
+						// </div>
+					}
 					<div className={`flex gap-x-2  items-center p-1  px-3 py-1 rounded-xl border-primary/30 border-[0.1px] cursor-pointer divide-x-[0.1px] divide-white/30 hover:bg-[#333333]/30 ${sortActive ? "bg-[#333333]/30" : "bg-background"}`} onClick={() => {
 						sortActive === false ? setSortActive(true) : setSortActive(false)
 					}}>

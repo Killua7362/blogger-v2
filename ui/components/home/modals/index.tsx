@@ -8,6 +8,8 @@ import EditMetaData from '@/ui/components/home/modals/EditMetaData'
 import EditPost from '@/ui/components/home/modals/EditPost'
 import CommitModal from '@/ui/components/home/modals/Commit'
 import BookMarkModal from '@/ui/components/home/modals/Bookmarks'
+import FilterModal from '@/ui/components/home/modals/FilterModal'
+
 
 const Modal = () => {
 	const [isModalOpen, setIsModalOpen] = useRecoilState(modalStateData)
@@ -29,7 +31,8 @@ const Modal = () => {
 						'Edit Post': <EditPost />,
 						'Commit': <CommitModal />,
 						'Bookmarks': <BookMarkModal />,
-						'Edit MetaData': <EditMetaData />
+						'Edit MetaData': <EditMetaData />,
+						'filter': <FilterModal />
 					}[isModalOpen.title]
 
 				}

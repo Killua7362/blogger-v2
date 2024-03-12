@@ -38,7 +38,7 @@ const sortFunction = (data: Entries<allPosts>, filterConfig: filterConfig) => {
 		})
 	}
 	if (filterConfig?.searchPrefix !== "") {
-		data = data.filter((entry) => entry[1]?.title.includes(filterConfig?.searchPrefix || ""))
+		data = data.filter((entry) => (entry[1]?.title || "").includes(filterConfig?.searchPrefix || ""))
 	}
 	if (filterConfig?.reverse) {
 		return data.reverse();

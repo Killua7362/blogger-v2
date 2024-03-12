@@ -8,6 +8,7 @@ import { useRecoilState } from 'recoil'
 import { navbarMenuState, redisCommits, contextMenuState, modalStateData, allPosts } from '@/atoms/states'
 
 import { usePathname, useSearchParams } from 'next/navigation'
+import { motion } from 'framer-motion'
 
 const RootLayout = (
 	{ children }: { children: React.ReactNode }
@@ -31,9 +32,21 @@ const RootLayout = (
 		}
 	}, [pathname, isRender])
 
+	const variants = {
+		hidden: { opacity: 0, x: 0, y: -200 },
+		enter: { opacity: 1, x: 0, y: 0 },
+		exit: { opacity: 0, x: 0, y: -200 },
+	}
 
 	return isRender && (
-		<div className={`min-h-screen flex flex-col items-center justify-between w-full relative ${isModalOpen.open ? "fixed" : ""}`}
+		<motion.div
+			key={pathname}
+			initial="hidden"
+			animate="enter"
+			exit="exit"
+			variants={variants}
+			transition={{ duration: 0.4, type: "linear" }}
+			className={`min-h-screen flex flex-col items-center justify-between w-full relative ${isModalOpen.open ? "fixed" : ""}`}
 			onClick={() => {
 				setIsMenuOpen(false)
 				setContextMenuMetaData(prev => {
@@ -54,7 +67,7 @@ const RootLayout = (
 				{children}
 			</div>
 			<Footer />
-		</div>
+		</motion.div>
 	)
 }
 export default RootLayout

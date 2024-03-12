@@ -4,6 +4,7 @@ import ContextMenu from '@/ui/components/posts/contextmenu'
 
 import { useRecoilState } from 'recoil'
 import { contextMenuState, navbarMenuState, signInState, allPosts } from '@/atoms/states'
+import { motion } from 'framer-motion'
 import Link from 'next/link'
 
 const customFilter = (data: allPosts, filterConfig: filterConfig) => {
@@ -70,18 +71,21 @@ const PostsContainer = ({ filterConfig }: { filterConfig: filterConfig }) => {
 					sortFunction(Object.entries(customFilter(allPostsData, filterConfig)).slice(0, filterConfig.postsCount || Object.keys(allPostsData).length), filterConfig).map(entry => entry[0]).map((id, idx) => {
 						return (allPostsData[id].title) && (
 							<Link href={{ pathname: "/post", query: { id: id } }} className='text-white no-underline' key={`postContainer+${id}+${idx}`}>
-								<div className='flex flex-col gap-y-1 border-white/30 rounded-xl md:p-6 md:py-4 p-3' onContextMenu={(e) => {
-									if (isSignIn) {
-										e.preventDefault()
-										e.stopPropagation()
-										setIsMenuOpen(false)
-										setContextMenuMetaData({
-											open: true,
-											points: [e.pageX, e.pageY],
-											id: id
-										})
-									}
-								}}>
+								<motion.div
+									className='flex flex-col gap-y-1 border-white/30 rounded-xl md:p-6 md:py-4 p-3'
+									whileHover={{ scale: 1.1, margin: '14px', borderColor: 'white', borderWidth: '1px' }}
+									onContextMenu={(e) => {
+										if (isSignIn) {
+											e.preventDefault()
+											e.stopPropagation()
+											setIsMenuOpen(false)
+											setContextMenuMetaData({
+												open: true,
+												points: [e.pageX, e.pageY],
+												id: id
+											})
+										}
+									}}>
 									<div className='flex w-full justify-between'>
 										<div className='text-2xl tracking-wide uppercase'>
 											{allPostsData[id].title}
@@ -112,7 +116,7 @@ const PostsContainer = ({ filterConfig }: { filterConfig: filterConfig }) => {
 									<div className='text-white/80 font-thin'>
 										word count: {allPostsData[id]?.content?.length}
 									</div>
-								</div>
+								</motion.div>
 							</Link>
 						)
 					})

@@ -16,6 +16,7 @@
     "@types/mdx": "^2.0.11",
     "@types/uuid": "^9.0.8",
     "@uiw/react-md-editor": "^4.0.3",
+    "framer-motion": "^11.0.12",
     "gray-matter": "^4.0.3",
     "i": "^0.3.7",
     "next": "14.1.2",

@@ -8,7 +8,8 @@ const AllPosts = () => {
 	const [filterConfig, setFilterConfig] = useState<filterConfig>({
 		isPinned: false,
 		reverse: false,
-		sortType: "modified date"
+		sortType: "modified date",
+		searchPrefix: ""
 	})
 
 	const [sortActive, setSortActive] = useState(false)
@@ -22,7 +23,14 @@ const AllPosts = () => {
 					<span className='relative text-xl mt-2 ml-2'>
 						<FcSearch />
 					</span>
-					<input className='w-11/12 text-xl bg-background text-white p-4 h-0 outline-none focus-within:outline-none' placeholder='Search posts...' />
+					<input className='w-11/12 text-xl bg-background text-white p-4 h-0 outline-none focus-within:outline-none' placeholder='Search posts...' onChange={(e) => {
+						setFilterConfig(prev => {
+							return {
+								...prev,
+								searchPrefix:(e.target.value || "")
+							}
+						})
+					}} />
 				</div>
 				<div className='flex gap-x-2 w-full items-center'>
 					<div className='p-1 bg-background hover:bg-[#333333]/30 px-3 py-1 rounded-xl border-primary/30 border-[0.1px] cursor-pointer'>

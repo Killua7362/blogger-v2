@@ -37,10 +37,13 @@ const sortFunction = (data: Entries<allPosts>, filterConfig: filterConfig) => {
 			return new Date(a[1]?.updatedOn) - new Date(b[1]?.updatedOn)
 		})
 	}
-
+	if (filterConfig?.searchPrefix !== "") {
+		data = data.filter((entry) => entry[1]?.title.includes(filterConfig?.searchPrefix || ""))
+	}
 	if (filterConfig?.reverse) {
 		return data.reverse();
 	}
+
 	return data;
 }
 

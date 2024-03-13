@@ -1,3 +1,5 @@
+'use client'
+
 import { Fragment } from 'react'
 import Image from 'next/image'
 import Linx from '@/ui/layout/linkx'
@@ -6,6 +8,7 @@ import { MdKeyboardArrowRight } from "react-icons/md";
 import PostsContainer from '@/ui/components/posts/postsContainer'
 import { FaArrowUpRightFromSquare } from "react-icons/fa6";
 import Link from 'next/link'
+import { motion } from 'framer-motion'
 
 const BasePage = () => {
 	return (
@@ -17,9 +20,14 @@ const BasePage = () => {
 							<span className='text-2xl'>
 								Black Grimore
 							</span>
-							<div className='text-base text-primary cursor-pointer'>
-								<FaArrowUpRightFromSquare />
-							</div>
+							<Link href="https://github.com/Killua7362/blogger-v2" target='_blank'>
+								<motion.div
+									className='text-base text-primary cursor-pointer'
+									whileHover={{ scale: 1.1 }}
+								>
+									<FaArrowUpRightFromSquare />
+								</motion.div>
+							</Link>
 						</div>
 						<div className='text-lg text-justify sm:tracking-wide font-thin'>
 							Black Grimore is my personal digital garden. Where I share and save my knowledge. It would allow me to access my notes or guides

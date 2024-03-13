@@ -1,10 +1,12 @@
+'use client'
 import { FaInstagram, FaLinkedin, FaTwitter, FaGithub } from "react-icons/fa";
 import { SiMyanimelist, SiGmail } from "react-icons/si";
-
+import { motion } from 'framer-motion'
 const Linx = () => {
 	return (
 		<div className="flex pt-2 gap-4">
-			<a
+			<motion.a
+				whileHover={{ scale: 1.1 }}
 				tabIndex={-1}
 				href="https://github.com/Killua7362"
 				target="_blank"
@@ -12,8 +14,9 @@ const Linx = () => {
 				className="text-[20px] text-text"
 			>
 				<FaGithub />
-			</a>
-			<a
+			</motion.a>
+			<motion.a
+				whileHover={{ scale: 1.1 }}
 				tabIndex={-1}
 				href="https://twitter.com/Killua7362"
 				target="_blank"
@@ -41,8 +44,9 @@ const Linx = () => {
 						</clipPath>
 					</defs>
 				</svg>
-			</a>
-			<a
+			</motion.a>
+			<motion.a
+				whileHover={{ scale: 1.1 }}
 				tabIndex={-1}
 				href="https://www.linkedin.com/in/killua7362/"
 				target="_blank"
@@ -66,8 +70,10 @@ const Linx = () => {
 						</g>
 					</g>
 				</svg>
-			</a>
-			<a tabIndex={-1} href="mailto:bhat7362@gmail.com">
+			</motion.a>
+			<motion.a
+				whileHover={{ scale: 1.1 }}
+				tabIndex={-1} href="mailto:bhat7362@gmail.com">
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
 					width="20"
@@ -99,7 +105,7 @@ const Linx = () => {
 						d="M16.9,41.4v9.8l24.5,18.4V37.8l-6.9-5.2C27.3,27.2,16.9,32.4,16.9,41.4z"
 					></path>
 				</svg>
-			</a>
+			</motion.a>
 		</div>
 	);
 };

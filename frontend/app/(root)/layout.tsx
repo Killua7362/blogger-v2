@@ -4,11 +4,12 @@ import { Fragment, useState, useEffect } from 'react'
 import NavBar from "@/ui/layout/navbar";
 import Footer from "@/ui/layout/footer";
 
-import { useRecoilState } from 'recoil'
+import { useRecoilState, useRecoilValue } from 'recoil'
 import { navbarMenuState, redisCommits, contextMenuState, modalStateData, allPosts } from '@/atoms/states'
 
 import { usePathname, useSearchParams } from 'next/navigation'
 import { motion } from 'framer-motion'
+import axios from 'axios'
 
 const RootLayout = (
 	{ children }: { children: React.ReactNode }
@@ -18,7 +19,6 @@ const RootLayout = (
 	const [isRender, setIsRender] = useState(false)
 	const [isHome, setIsHome] = useState(true)
 	const [isModalOpen, setIsModalOpen] = useRecoilState(modalStateData)
-
 	const pathname = usePathname()
 
 	useEffect(() => {
@@ -31,6 +31,7 @@ const RootLayout = (
 			setIsRender(true)
 		}
 	}, [pathname, isRender])
+
 
 	const variants = {
 		hidden: { opacity: 0, x: -300, y: 0 },

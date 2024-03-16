@@ -73,7 +73,7 @@ const PostsContainer = ({ filterConfig }: { filterConfig: filterConfig }) => {
 							<Link href={{ pathname: "/post", query: { id: id } }} className='text-white no-underline' key={`postContainer+${id}+${idx}`}>
 								<motion.div
 									className='flex flex-col gap-y-1 border-white/30 rounded-xl md:p-6 md:py-4 p-3'
-									whileHover={{ scale: 1.1, margin: '14px', borderColor: 'white', borderWidth: '1px' }}
+									whileHover={{ scale: 1.1, margin: '14px', borderColor: '#ffffff', borderWidth: '1px' }}
 									onContextMenu={(e) => {
 										if (isSignIn) {
 											e.preventDefault()

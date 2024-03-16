@@ -1,7 +1,7 @@
 'use client'
 import { RxCross2 } from "react-icons/rx";
-import { useRecoilState } from 'recoil'
-import { redisCommits, allPosts, modalStateData, contextMenuState } from '@/atoms/states'
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
+import { redisCommits, allPosts, modalStateData, contextMenuState, redisSelector } from '@/atoms/states'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -10,7 +10,9 @@ const EditMetaData = () => {
 	const [isModalOpen, setIsModalOpen] = useRecoilState(modalStateData)
 	const [isContextMenuOpen, setIsContextMenuOpen] = useRecoilState(contextMenuState)
 	const [allPostsData, setAllPostsData] = useRecoilState(allPosts)
-	const [redisCommitsData, setRedisCommitsData] = useRecoilState(redisCommits)
+
+	const redisCommitsData = useRecoilValue(redisCommits)
+	const setRedisCommitsData = useSetRecoilState(redisSelector)
 
 	const EditPostMetaDataSchema = z.object({
 		title: z.string().min(1).max(30),
@@ -47,11 +49,9 @@ const EditMetaData = () => {
 				</div>
 			</div>
 			<form className="mt-3 flex flex-col items-end font-thin" onSubmit={handleSubmit((data) => {
-				setRedisCommitsData(prev => {
-					return {
-						...prev,
+				let payload = {
 						[isContextMenuOpen.id]: {
-							original: { ...(prev[isContextMenuOpen.id]?.original || allPostsData[isContextMenuOpen.id]) },
+							original: { ...(redisCommitsData[isContextMenuOpen.id]?.original || allPostsData[isContextMenuOpen.id]) },
 							history: [
 								{
 									action: "edit_metadata",
@@ -62,8 +62,8 @@ const EditMetaData = () => {
 								}
 							]
 						}
-					}
-				})
+				}
+				setRedisCommitsData(payload)
 
 				setIsModalOpen({ open: false, title: "" })
 			})}>

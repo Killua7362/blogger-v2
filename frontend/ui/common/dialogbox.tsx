@@ -1,23 +1,26 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { useRecoilState } from 'recoil'
-import { navbarMenuState, modalStateData, contextMenuState, signInState, adminState, redisCommits, allPosts } from '@/atoms/states'
-import { usePathname } from 'next/navigation'
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
+import { navbarMenuState, modalStateData, contextMenuState, signInState, adminState, redisCommits, allPosts, redisSelector } from '@/atoms/states'
+import { usePathname, useRouter } from 'next/navigation'
 import { v4 as uuidv4 } from 'uuid';
 
-const DialogBox = ({ isModal, isHome, extraActions}: { isModal: boolean, isHome: boolean, extraActions: menuItems[] }) => {
+const DialogBox = ({ isModal, isHome, extraActions }: { isModal: boolean, isHome: boolean, extraActions: menuItems[] }) => {
 	const [isRender, setIsRender] = useState(false)
 	const [isMenuOpen, setIsMenuOpen] = useRecoilState(navbarMenuState)
 	const [isContextOpen, setIsContextOpen] = useRecoilState(contextMenuState)
 	const [isModalOpen, setIsModalOpen] = useRecoilState(modalStateData)
 	const [allPostsData, setAllPostsData] = useRecoilState(allPosts)
 
-	const [redisCommitsData, setRedisCommitsData] = useRecoilState(redisCommits)
+	const setRedisCommitsData = useSetRecoilState(redisSelector)
+	const redisCommitsData = useRecoilValue(redisCommits)
 
 	const [isSignedIn, setIsSignedIn] = useRecoilState(signInState)
 	const [isAdmin, setIsAdmin] = useRecoilState(adminState)
 
 	const [menuItems, setMenuItems] = useState<menuItems[]>([])
+
+	const router = useRouter()
 
 	const SignInHandler = () => {
 
@@ -28,13 +31,11 @@ const DialogBox = ({ isModal, isHome, extraActions}: { isModal: boolean, isHome:
 	}
 
 	const PinHandler = () => {
-		setRedisCommitsData(prev => {
-			return {
-				...prev,
+		let payload = {
 				[isContextOpen.id]: {
-					original: { ...(prev[isContextOpen.id]?.original || allPostsData[isContextOpen.id]) },
+					original: { ...(redisCommitsData[isContextOpen.id]?.original || allPostsData[isContextOpen.id]) },
 					history: [
-						...(prev[isContextOpen.id]?.history || []),
+						...(redisCommitsData[isContextOpen.id]?.history || []),
 						{
 							action: allPostsData[isContextOpen.id].pinned === true ? "unpin_post" : "pin_post",
 							payload: {
@@ -44,29 +45,32 @@ const DialogBox = ({ isModal, isHome, extraActions}: { isModal: boolean, isHome:
 						}
 					]
 				}
-			}
-		})
+		}
+		setRedisCommitsData(payload)
 	}
 
 	const DeleteHandler = () => {
-		setRedisCommitsData(prev => {
-			return {
-				...prev,
+		let payload = {
 				[isContextOpen.id]: {
-					original: { ...(prev[isContextOpen.id]?.original || allPostsData[isContextOpen.id]) },
+					original: { ...(redisCommitsData[isContextOpen.id]?.original || allPostsData[isContextOpen.id]) },
 					history: [
-						...(prev[isContextOpen.id]?.history || []),
+						...(redisCommitsData[isContextOpen.id]?.history || []),
 						{
 							action: "delete_post",
 							payload: {}
 						}
 					]
 				}
-			}
-		})
+		}
+		setRedisCommitsData(payload)
 	}
 
 	const MarkHandler = () => {
+		localStorage.removeItem('all_commits')
+		router.refresh()
+	}
+
+	const CacheHandler = () => {
 
 	}
 
@@ -93,6 +97,10 @@ const DialogBox = ({ isModal, isHome, extraActions}: { isModal: boolean, isHome:
 		},
 		{
 			title: "Commit",
+		},
+		{
+			title: "Clear Cache",
+			onClickHandler: CacheHandler
 		}
 	]
 

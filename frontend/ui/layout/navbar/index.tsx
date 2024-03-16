@@ -3,8 +3,8 @@ import { Fragment } from 'react'
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import { useState, useEffect } from 'react'
 
-import { useRecoilState } from 'recoil'
-import { contextMenuState, navbarMenuState, modalStateData, allPosts, redisCommits } from '@/atoms/states'
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
+import { contextMenuState, navbarMenuState, modalStateData, allPosts, redisCommits, redisSelector } from '@/atoms/states'
 import DialogBox from '@/ui/common/dialogbox'
 
 import { usePathname } from 'next/navigation'
@@ -18,7 +18,9 @@ const NavBar = ({ isHome }: { isHome: boolean }) => {
 	const [isModalOpen, setIsModalOpen] = useRecoilState(modalStateData)
 	const [contextMenuMetaData, setContextMenuMetaData] = useRecoilState(contextMenuState)
 
-	const [redisCommitsData, setRedisCommitsData] = useRecoilState(redisCommits)
+	const redisCommitsData = useRecoilValue(redisCommits)
+	const setRedisCommitsData = useSetRecoilState(redisSelector)
+	
 	const [allPostsData, setAllPostsData] = useRecoilState(allPosts)
 
 	useEffect(() => {

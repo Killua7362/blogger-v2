@@ -1,4 +1,4 @@
-import { atom } from 'recoil'
+import { atom, selector } from 'recoil'
 import { recoilPersist } from 'recoil-persist'
 
 const { persistAtom } = recoilPersist()
@@ -55,9 +55,27 @@ export const allPosts = atom({
 	} as allPosts
 })
 
+export const redisSelector = selector({
+	key: "redisSelector",
+	get: () => {
+		const data = localStorage.getItem('all_commits')
+		if (!data) {
+			// fetch api and set localstorage
+			//
+			return {} as redisCommits
+		}
+		return JSON.parse(data) as redisCommits
+	},
+	set: ({ set, get }, newPost) => {
+		const currState = get(redisCommits)
+		const newState = { ...currState, ...newPost }
+		localStorage.setItem('all_commits', JSON.stringify(newState))
+		set(redisCommits, newState)
+	}
+})
+
 export const redisCommits = atom({
 	key: "redisCommits",
-	default: {
-	} as redisCommits
+	default: redisSelector
 })
 

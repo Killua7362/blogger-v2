@@ -1,8 +1,8 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { RxCross2 } from "react-icons/rx";
-import { useRecoilState } from 'recoil'
-import { contextMenuState, modalStateData, allPosts, redisCommits } from '@/atoms/states'
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
+import { contextMenuState, modalStateData, allPosts, redisCommits, redisSelector } from '@/atoms/states'
 import MDEditor from '@uiw/react-md-editor';
 
 const EditPost = () => {
@@ -13,7 +13,9 @@ const EditPost = () => {
 	})
 	const [content, setContent] = useState<string>()
 
-	const [redisCommitsData, setRedisCommitsData] = useRecoilState(redisCommits)
+	const redisCommitsData = useRecoilValue(redisCommits)
+	const setRedisCommitsData = useSetRecoilState(redisSelector)
+
 	const [allPostsData, setAllPostsData] = useRecoilState(allPosts)
 	const [isContextMenuOpen, setIsContextMenuOpen] = useRecoilState(contextMenuState)
 	const [contentData, setContentData] = useState<Post>()
@@ -58,13 +60,11 @@ const EditPost = () => {
 					{previewButton.title}
 				</div>
 				<div className="px-3 py-2 w-fit border-white bg-white text-background rounded-md text-md mt-2 cursor-pointer hover:bg-white/90 hover:text-background/90" onClick={() => {
-					setRedisCommitsData(prev => {
-						return {
-							...prev,
+					let payload = {
 							[isContextMenuOpen.id]: {
-								original: { ...(prev[isContextMenuOpen.id]?.original || allPostsData[isContextMenuOpen.id]) },
+								original: { ...(redisCommitsData[isContextMenuOpen.id]?.original || allPostsData[isContextMenuOpen.id]) },
 								history: [
-									...(prev[isContextMenuOpen.id]?.history || []),
+									...(redisCommitsData[isContextMenuOpen.id]?.history || []),
 									{
 										action: "edit_post",
 										payload: {
@@ -74,8 +74,8 @@ const EditPost = () => {
 									}
 								]
 							}
-						}
-					})
+					}
+					setRedisCommitsData(payload)
 					setIsModalOpen({ open: false, title: "" })
 				}}>
 					Modify

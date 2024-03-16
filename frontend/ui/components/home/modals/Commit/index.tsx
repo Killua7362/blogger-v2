@@ -1,15 +1,15 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { RxCross2 } from "react-icons/rx";
-import { useRecoilState } from 'recoil'
-import { modalStateData, redisCommits } from '@/atoms/states'
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
+import { modalStateData, redisCommits, redisSelector } from '@/atoms/states'
 
 import CommitDiv from '@/ui/components/home/modals/Commit/CommitDiv'
 
 const CommitModal = () => {
 	const [isModalOpen, setIsModalOpen] = useRecoilState(modalStateData)
-	const [redisCommitsData, setRedisCommitsData] = useRecoilState(redisCommits)
-
+	const redisCommitsData = useRecoilValue(redisCommits)
+	const setRedisCommitsData = useSetRecoilState(redisSelector)
 	const [staged, setStaged] = useState(false)
 	const [tempDB, setTempDB] = useState({})
 	const [isRender, setIsRender] = useState(false)
@@ -63,9 +63,7 @@ const CommitModal = () => {
 				</div>
 				<div className="flex gap-x-4">
 					<div className={`px-3 py-2 w-fit border-white text-background rounded-md text-md mt-2 cursor-pointer hover:bg-white/90 hover:text-background/90 ${staged ? "bg-red-500" : "bg-white"}`} onClick={() => {
-						setRedisCommitsData(prev => {
-							return { ...tempDB }
-						})
+						setRedisCommitsData({...tempDB})
 						setIsModalOpen({ open: false, title: "" })
 					}}>
 						{staged ? "Push" : "Save"}

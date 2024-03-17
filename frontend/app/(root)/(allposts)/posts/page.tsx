@@ -1,23 +1,20 @@
 'use client'
 import { Fragment, useState } from 'react'
-import PostsContainer from '@/ui/components/posts/postsContainer'
 import { FcSearch } from "react-icons/fc";
 import { AiOutlineArrowUp, AiOutlineArrowDown } from "react-icons/ai";
 
-
-import { useRecoilState } from 'recoil'
-import { modalStateData } from '@/atoms/states';
+import dynamic from 'next/dynamic';
+const PostsContainer = dynamic(() => import('@/ui/components/posts/postsContainer'), { ssr: false, loading: () => <p>Loading...</p> })
 
 const AllPosts = () => {
 	const [filterConfig, setFilterConfig] = useState<filterConfig>({
 		isPinned: false,
 		reverse: false,
-		sortType: "modified date",
+		sortType: "modified date" as sortType,
 		searchPrefix: ""
 	})
 
 	const [sortActive, setSortActive] = useState(false)
-	const [isModalOpen, setIsModalOpen] = useRecoilState(modalStateData)
 
 	return (
 		<Fragment>
@@ -30,7 +27,7 @@ const AllPosts = () => {
 						<FcSearch />
 					</span>
 					<input className='w-11/12 text-xl bg-background text-white p-4 h-0 outline-none focus-within:outline-none' placeholder='Search posts...' onChange={(e) => {
-						setFilterConfig(prev => {
+						setFilterConfig((prev) => {
 							return {
 								...prev,
 								searchPrefix: (e.target.value || "")
@@ -61,10 +58,10 @@ const AllPosts = () => {
 					{
 						sortActive && <select className='py-1 px-2 bg-background text-white border-white/30 border-[0.1px] rounded-xl'
 							value={filterConfig?.sortType || "modified date"} onChange={(e) => {
-								setFilterConfig(prev => {
+								setFilterConfig((prev) => {
 									return {
 										...prev,
-										sortType: (e.target.value || "modified date")
+										sortType: (e.target.value || "modified date") as sortType
 									}
 								})
 							}}>
@@ -76,13 +73,13 @@ const AllPosts = () => {
 
 					}
 					<div className='pt-1 text-lg cursor-pointer' onClick={() => {
-						filterConfig?.reverse === true ? setFilterConfig(prev => {
+						filterConfig?.reverse === true ? setFilterConfig((prev) => {
 							return {
 								...prev,
 								reverse: false
 							}
 						})
-							: setFilterConfig(prev => {
+							: setFilterConfig((prev) => {
 								return {
 									...prev,
 									reverse: true

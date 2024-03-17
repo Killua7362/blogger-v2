@@ -1,45 +1,18 @@
 'use client'
 import { Fragment } from 'react'
 import { HiOutlineDotsVertical } from "react-icons/hi";
-import { useState, useEffect } from 'react'
-
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
-import { contextMenuState, navbarMenuState, modalStateData, allPosts, redisCommits, redisSelector } from '@/atoms/states'
+import { contextMenuState, navbarMenuState, modalStateData } from '@/atoms/states'
 import DialogBox from '@/ui/common/dialogbox'
 
-import { usePathname } from 'next/navigation'
 import Modal from '@/ui/components/home/modals'
 
 import Link from 'next/link';
-import { redirect } from 'next/navigation';
 
 const NavBar = ({ isHome }: { isHome: boolean }) => {
 	const [isMenuOpen, setIsMenuOpen] = useRecoilState(navbarMenuState)
-	const [isModalOpen, setIsModalOpen] = useRecoilState(modalStateData)
-	const [contextMenuMetaData, setContextMenuMetaData] = useRecoilState(contextMenuState)
-
-	const redisCommitsData = useRecoilValue(redisCommits)
-	const setRedisCommitsData = useSetRecoilState(redisSelector)
-	
-	const [allPostsData, setAllPostsData] = useRecoilState(allPosts)
-
-	useEffect(() => {
-		let result: allPosts = {}
-		for (let id in redisCommitsData) {
-			if (redisCommitsData[id].history.length !== 0) {
-				result[id] = (redisCommitsData[id].history.slice(-1)[0].payload)
-			} else {
-				result[id] = redisCommitsData[id].original
-			}
-		}
-		setAllPostsData(prev => {
-			return {
-				...prev,
-				...result
-			}
-		})
-	}, [redisCommitsData])
-
+	const isModalOpen = useRecoilValue(modalStateData)
+	const setContextMenuMetaData = useSetRecoilState(contextMenuState)
 	return (
 		<Fragment>
 			{

@@ -6,24 +6,24 @@ import { useSearchParams, redirect } from 'next/navigation'
 
 import { MarkdownComponents } from '@/ui/components/posts/markdown-components'
 
-import * as matter from 'gray-matter'
-
-import Markdown from 'react-markdown'
-
 import rehypeSanitize from 'rehype-sanitize'
 import remarkGfm from 'remark-gfm'
 import rehypeFormat from 'rehype-format'
 import { notFound } from 'next/navigation'
 
-import { useRecoilState } from 'recoil'
+import { useRecoilValue, useSetRecoilState } from 'recoil'
 import { allPosts, contextMenuState } from '@/atoms/states'
+
+import dynamic from 'next/dynamic'
+
+const Markdown = dynamic(() => import('react-markdown'), { ssr: false })
 
 const Post = () => {
 	const [isRender, setIsRender] = useState(false)
 	const searchParams = useSearchParams()
-	const [allPostsData, setAllPostsData] = useRecoilState(allPosts)
+	const allPostsData = useRecoilValue(allPosts)
 	const [content, setContent] = useState<Post>()
-	const [isContextOpen, setIsContextOpen] = useRecoilState(contextMenuState)
+	const setIsContextOpen = useSetRecoilState(contextMenuState)
 
 	useEffect(() => {
 		let postId = (searchParams.get('id') || '-1')
@@ -54,7 +54,7 @@ const Post = () => {
 				</div>
 				<div className='flex justify-between'>
 					<div className='text-base font-thin'>
-						{content?.updatedOn}
+						{content?.updated_at}
 					</div>
 					<div className='flex gap-x-2'>
 						{(content?.tags || "").split(',').map((e, i) => {

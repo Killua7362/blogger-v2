@@ -2,13 +2,14 @@
 
 import { Fragment } from 'react'
 import Image from 'next/image'
-import Linx from '@/ui/layout/linkx'
-import { FcLink } from "react-icons/fc";
 import { MdKeyboardArrowRight } from "react-icons/md";
-import PostsContainer from '@/ui/components/posts/postsContainer'
 import { FaArrowUpRightFromSquare } from "react-icons/fa6";
 import Link from 'next/link'
 import { motion } from 'framer-motion'
+import dynamic from 'next/dynamic';
+
+const PostsContainer = dynamic(() => import('@/ui/components/posts/postsContainer'), { ssr: false })
+const Linx = dynamic(() => import('@/ui/layout/linkx'), { ssr: false })
 
 const BasePage = () => {
 	return (
@@ -36,7 +37,7 @@ const BasePage = () => {
 						<Linx />
 					</div>
 					<div className="flex flex-col items-center justify-center gap-y-2">
-						<Image priority unoptimized src="/images/grimoire.webp" width={0} height={0} className='h-full w-full md:h-[150px] md:w-[200px] ' alt="Black grimoire in black clover" />
+						<Image priority src="/images/grimoire.webp" quality={100} width={200} height={200} className='h-full w-full md:h-[150px] md:w-[200px] ' alt="Black grimoire in black clover" />
 						<span className="text-sm tracking-wide">
 							Reference: Black Clover
 						</span>

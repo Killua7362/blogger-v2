@@ -1,6 +1,3 @@
-import { PreviewType } from "@uiw/react-md-editor";
-
-
 interface contextMenuData {
 	open: boolean;
 	points: number[];
@@ -23,8 +20,8 @@ interface Post {
 	content?: string;
 	pinned?: boolean;
 	tags?: string;
-	createdOn?: string;
-	updatedOn?: string;
+	created_at?: string;
+	updated_at?: string;
 }
 
 interface allPosts {

@@ -16,7 +16,7 @@ const EditPost = () => {
 	const redisCommitsData = useRecoilValue(redisCommits)
 	const setRedisCommitsData = useSetRecoilState(redisSelector)
 
-	const [allPostsData, setAllPostsData] = useRecoilState(allPosts)
+	const allPostsData = useRecoilValue(allPosts)
 	const [isContextMenuOpen, setIsContextMenuOpen] = useRecoilState(contextMenuState)
 	const [contentData, setContentData] = useState<Post>()
 
@@ -60,7 +60,7 @@ const EditPost = () => {
 					{previewButton.title}
 				</div>
 				<div className="px-3 py-2 w-fit border-white bg-white text-background rounded-md text-md mt-2 cursor-pointer hover:bg-white/90 hover:text-background/90" onClick={() => {
-					let payload = {
+					let payload:redisCommits = {
 							[isContextMenuOpen.id]: {
 								original: { ...(redisCommitsData[isContextMenuOpen.id]?.original || allPostsData[isContextMenuOpen.id]) },
 								history: [

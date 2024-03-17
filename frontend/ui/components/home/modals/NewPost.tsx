@@ -1,19 +1,15 @@
 'use client'
 import { RxCross2 } from "react-icons/rx";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
-import { modalStateData, allPosts, redisCommits, redisSelector } from '@/atoms/states'
+import { useSetRecoilState } from 'recoil'
+import { modalStateData, redisSelector } from '@/atoms/states'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod';
 import { v4 as uuidv4 } from 'uuid';
 
 const NewPostModal = () => {
-	const [isModalOpen, setIsModalOpen] = useRecoilState(modalStateData)
-
-	const redisCommitsData = useRecoilValue(redisCommits)
+	const setIsModalOpen = useSetRecoilState(modalStateData)
 	const setRedisCommitsData = useSetRecoilState(redisSelector)
-
-	const [allPostsData, setAllPostsData] = useRecoilState(allPosts)
 
 	const NewPostSchema = z.object({
 		title: z.string().min(1).max(30),
@@ -52,19 +48,19 @@ const NewPostModal = () => {
 			</div>
 			<form className="mt-3 flex flex-col items-end font-thin" onSubmit={handleSubmit((data) => {
 				let newId = uuidv4()
-				let dataPayload = {
+				let dataPayload:allPosts = {
 					[newId]: {
 						title: data.title,
 						description: data.description,
 						content: "Empty Post",
 						pinned: false,
 						tags: data.tags,
-						createOn: "today",
-						updatedOn: "yesterday"
+						created_at: "today",
+						updated_at: "yesterday"
 					}
 				}
 				
-				let payload = {
+				let payload:redisCommits = {
 					[newId]: {
 						original: { ...dataPayload[newId] },
 						history: [

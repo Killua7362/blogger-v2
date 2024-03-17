@@ -2,25 +2,19 @@
 import { useState, useEffect } from 'react'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import { navbarMenuState, modalStateData, contextMenuState, signInState, adminState, redisCommits, allPosts, redisSelector } from '@/atoms/states'
-import { usePathname, useRouter } from 'next/navigation'
-import { v4 as uuidv4 } from 'uuid';
 
 const DialogBox = ({ isModal, isHome, extraActions }: { isModal: boolean, isHome: boolean, extraActions: menuItems[] }) => {
 	const [isRender, setIsRender] = useState(false)
-	const [isMenuOpen, setIsMenuOpen] = useRecoilState(navbarMenuState)
+	const setIsMenuOpen = useSetRecoilState(navbarMenuState)
 	const [isContextOpen, setIsContextOpen] = useRecoilState(contextMenuState)
-	const [isModalOpen, setIsModalOpen] = useRecoilState(modalStateData)
-	const [allPostsData, setAllPostsData] = useRecoilState(allPosts)
-
+	const setIsModalOpen = useSetRecoilState(modalStateData)
+	const allPostsData = useRecoilValue(allPosts)
 	const setRedisCommitsData = useSetRecoilState(redisSelector)
 	const redisCommitsData = useRecoilValue(redisCommits)
 
-	const [isSignedIn, setIsSignedIn] = useRecoilState(signInState)
-	const [isAdmin, setIsAdmin] = useRecoilState(adminState)
-
+	const isSignedIn = useRecoilValue(signInState)
+	const isAdmin = useRecoilValue(adminState)
 	const [menuItems, setMenuItems] = useState<menuItems[]>([])
-
-	const router = useRouter()
 
 	const SignInHandler = () => {
 
@@ -31,47 +25,45 @@ const DialogBox = ({ isModal, isHome, extraActions }: { isModal: boolean, isHome
 	}
 
 	const PinHandler = () => {
-		let payload = {
-				[isContextOpen.id]: {
-					original: { ...(redisCommitsData[isContextOpen.id]?.original || allPostsData[isContextOpen.id]) },
-					history: [
-						...(redisCommitsData[isContextOpen.id]?.history || []),
-						{
-							action: allPostsData[isContextOpen.id].pinned === true ? "unpin_post" : "pin_post",
-							payload: {
-								...allPostsData[isContextOpen.id],
-								pinned: allPostsData[isContextOpen.id].pinned === true ? false : true
-							}
+		let payload: redisCommits = {
+			[isContextOpen.id]: {
+				original: { ...(redisCommitsData[isContextOpen.id]?.original || allPostsData[isContextOpen.id]) },
+				history: [
+					...(redisCommitsData[isContextOpen.id]?.history || []),
+					{
+						action: allPostsData[isContextOpen.id].pinned === true ? "unpin_post" : "pin_post",
+						payload: {
+							...allPostsData[isContextOpen.id],
+							pinned: allPostsData[isContextOpen.id].pinned === true ? false : true
 						}
-					]
-				}
+					}
+				]
+			}
 		}
 		setRedisCommitsData(payload)
 	}
 
 	const DeleteHandler = () => {
-		let payload = {
-				[isContextOpen.id]: {
-					original: { ...(redisCommitsData[isContextOpen.id]?.original || allPostsData[isContextOpen.id]) },
-					history: [
-						...(redisCommitsData[isContextOpen.id]?.history || []),
-						{
-							action: "delete_post",
-							payload: {}
-						}
-					]
-				}
+		let payload: redisCommits = {
+			[isContextOpen.id]: {
+				original: { ...(redisCommitsData[isContextOpen.id]?.original || allPostsData[isContextOpen.id]) },
+				history: [
+					...(redisCommitsData[isContextOpen.id]?.history || []),
+					{
+						action: "delete_post",
+						payload: {}
+					}
+				]
+			}
 		}
 		setRedisCommitsData(payload)
 	}
 
-	const MarkHandler = () => {
-		localStorage.removeItem('all_commits')
-		router.refresh()
-	}
 
 	const CacheHandler = () => {
-
+		localStorage.removeItem('all_commits')
+		localStorage.removeItem('posts')
+		window.location.reload()
 	}
 
 	const NavBarMenuItemsBefore: menuItems[] = [
@@ -82,9 +74,6 @@ const DialogBox = ({ isModal, isHome, extraActions }: { isModal: boolean, isHome
 	]
 
 	const NavBarMenuItemsAfter: menuItems[] = [
-		{
-			title: "Bookmarks",
-		},
 		{
 			title: "Sign Out",
 			onClickHandler: SignOutHandler
@@ -121,30 +110,23 @@ const DialogBox = ({ isModal, isHome, extraActions }: { isModal: boolean, isHome
 		}
 	]
 
-	const PostItemsNormal: menuItems[] = [
-		{
-			title: "Mark It",
-			onClickHandler: MarkHandler
-		}
-	]
-
-
 	useEffect(() => {
 		if (isModal) {
 			if (isAdmin) {
-				setMenuItems([...PostItemsNormal, ...PostItemsAdmin, ...extraActions])
+				setMenuItems([...PostItemsAdmin, ...extraActions])
 			} else {
-				setMenuItems([...PostItemsNormal, ...extraActions])
+				setMenuItems([...extraActions])
 			}
 		} else {
 			if (isSignedIn) {
-				setMenuItems([...PostItemsNormal, ...NavBarMenuItemsAfter])
 				if (isAdmin) {
 					if (isHome) {
 						setMenuItems([...NavBarMenuItemsHomeAdmin, ...NavBarMenuItemsAfter])
 					} else {
-						setMenuItems([...PostItemsNormal, ...PostItemsAdmin, ...NavBarMenuItemsAfter])
+						setMenuItems([...PostItemsAdmin, ...NavBarMenuItemsAfter])
 					}
+				} else {
+					setMenuItems([...NavBarMenuItemsAfter])
 				}
 			} else {
 				setMenuItems([...NavBarMenuItemsBefore])

@@ -1,11 +1,15 @@
 'use client'
-import { Fragment, useEffect, useState } from 'react'
+import { Fragment } from 'react'
 import ContextMenu from '@/ui/components/posts/contextmenu'
 
-import { useRecoilState } from 'recoil'
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import { contextMenuState, navbarMenuState, signInState, allPosts } from '@/atoms/states'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
+
+type Entries<T> = {
+	[K in keyof T]: [K, T[K]];
+}[keyof T][];
 
 const customFilter = (data: allPosts, filterConfig: filterConfig) => {
 	let result: allPosts = {}
@@ -23,7 +27,7 @@ const customFilter = (data: allPosts, filterConfig: filterConfig) => {
 const sortFunction = (data: Entries<allPosts>, filterConfig: filterConfig) => {
 	if (filterConfig?.sortType === "created date") {
 		data = data.sort((a, b) => {
-			return new Date(a[1]?.createdOn) - new Date(b[1]?.createdOn)
+			return +(new Date(a[1]?.created_at || '0')) - +new Date(b[1]?.created_at || '0')
 		})
 	} else if (filterConfig?.sortType === "name") {
 		data = data.sort((a, b) => {
@@ -35,7 +39,7 @@ const sortFunction = (data: Entries<allPosts>, filterConfig: filterConfig) => {
 		})
 	} else {
 		data = data.sort((a, b) => {
-			return new Date(a[1]?.updatedOn) - new Date(b[1]?.updatedOn)
+			return +new Date(a[1]?.updated_at || '0') - +new Date(b[1]?.updated_at || '0')
 		})
 	}
 	if (filterConfig?.searchPrefix !== "") {
@@ -50,10 +54,9 @@ const sortFunction = (data: Entries<allPosts>, filterConfig: filterConfig) => {
 
 const PostsContainer = ({ filterConfig }: { filterConfig: filterConfig }) => {
 	const [contextMenuMetaData, setContextMenuMetaData] = useRecoilState(contextMenuState)
-	const [isMenuOpen, setIsMenuOpen] = useRecoilState(navbarMenuState)
-	const [isSignIn, setIsSignIn] = useRecoilState(signInState)
-	const [allPostsData, setAllPostsData] = useRecoilState(allPosts)
-
+	const setIsMenuOpen = useSetRecoilState(navbarMenuState)
+	const isSignIn = useRecoilValue(signInState)
+	const allPostsData = useRecoilValue(allPosts)
 	return (
 		<Fragment>
 			{contextMenuMetaData.open && <ContextMenu />}
@@ -91,7 +94,7 @@ const PostsContainer = ({ filterConfig }: { filterConfig: filterConfig }) => {
 											{allPostsData[id].title}
 										</div>
 										<div className='text-lg font-thin'>
-											{allPostsData[id].updatedOn}
+											{allPostsData[id].updated_at}
 										</div>
 									</div>
 									<div className='flex gap-x-2'>

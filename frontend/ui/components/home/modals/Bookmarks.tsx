@@ -1,13 +1,11 @@
 'use client'
-import { useState } from 'react'
 import { RxCross2 } from "react-icons/rx";
-import { useRecoilState } from 'recoil'
+import { useSetRecoilState } from 'recoil'
 import { modalStateData } from '@/atoms/states'
 import { IoTrashBinSharp } from "react-icons/io5";
 
 const BookMarkModal = () => {
-	const [isModalOpen, setIsModalOpen] = useRecoilState(modalStateData)
-
+	const setIsModalOpen = useSetRecoilState(modalStateData)
 	return (
 		<div className="p-6 overflow-hidden w-full sm:w-10/12 xl:w-7/12 h-[40rem] border-primary/40 border-[0.1px] rounded-xl flex flex-col bg-background flex flex-col justify-between items-end" onClick={(e) => {
 			e.stopPropagation()

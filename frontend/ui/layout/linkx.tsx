@@ -1,6 +1,5 @@
 'use client'
-import { FaInstagram, FaLinkedin, FaTwitter, FaGithub } from "react-icons/fa";
-import { SiMyanimelist, SiGmail } from "react-icons/si";
+import { FaGithub } from "react-icons/fa";
 import { motion } from 'framer-motion'
 const Linx = () => {
 	return (

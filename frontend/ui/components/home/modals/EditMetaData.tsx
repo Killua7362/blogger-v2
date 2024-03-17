@@ -9,7 +9,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 const EditMetaData = () => {
 	const [isModalOpen, setIsModalOpen] = useRecoilState(modalStateData)
 	const [isContextMenuOpen, setIsContextMenuOpen] = useRecoilState(contextMenuState)
-	const [allPostsData, setAllPostsData] = useRecoilState(allPosts)
+	const allPostsData = useRecoilValue(allPosts)
 
 	const redisCommitsData = useRecoilValue(redisCommits)
 	const setRedisCommitsData = useSetRecoilState(redisSelector)
@@ -49,7 +49,7 @@ const EditMetaData = () => {
 				</div>
 			</div>
 			<form className="mt-3 flex flex-col items-end font-thin" onSubmit={handleSubmit((data) => {
-				let payload = {
+				let payload:redisCommits = {
 						[isContextMenuOpen.id]: {
 							original: { ...(redisCommitsData[isContextMenuOpen.id]?.original || allPostsData[isContextMenuOpen.id]) },
 							history: [

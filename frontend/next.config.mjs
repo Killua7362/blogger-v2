@@ -1,3 +1,11 @@
+import dotenv from 'dotenv'
+import withBundleAnalyzer from '@next/bundle-analyzer';
+dotenv.config({ path: "../.env" })
+
+const withAnalyzer = withBundleAnalyzer({
+	enabled: process.env.ANALYZE === 'true',
+})
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
 	compiler: {
@@ -5,4 +13,4 @@ const nextConfig = {
 	}
 };
 
-export default nextConfig;
+export default withAnalyzer(nextConfig);

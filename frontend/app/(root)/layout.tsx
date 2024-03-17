@@ -1,24 +1,26 @@
 'use client'
-import { Fragment, useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
+
+
+import { useRecoilValue, useSetRecoilState } from 'recoil'
+import { navbarMenuState, contextMenuState, modalStateData } from '@/atoms/states'
+
+import { usePathname } from 'next/navigation'
+import { motion } from 'framer-motion'
+
+import axios from 'axios'
 
 import NavBar from "@/ui/layout/navbar";
 import Footer from "@/ui/layout/footer";
 
-import { useRecoilState, useRecoilValue } from 'recoil'
-import { navbarMenuState, redisCommits, contextMenuState, modalStateData, allPosts } from '@/atoms/states'
-
-import { usePathname, useSearchParams } from 'next/navigation'
-import { motion } from 'framer-motion'
-import axios from 'axios'
-
 const RootLayout = (
 	{ children }: { children: React.ReactNode }
 ) => {
-	const [isMenuOpen, setIsMenuOpen] = useRecoilState(navbarMenuState)
-	const [contextMenuMetaData, setContextMenuMetaData] = useRecoilState(contextMenuState)
+	const setIsMenuOpen = useSetRecoilState(navbarMenuState)
+	const setContextMenuMetaData = useSetRecoilState(contextMenuState)
 	const [isRender, setIsRender] = useState(false)
 	const [isHome, setIsHome] = useState(true)
-	const [isModalOpen, setIsModalOpen] = useRecoilState(modalStateData)
+	const isModalOpen = useRecoilValue(modalStateData)
 	const pathname = usePathname()
 
 	useEffect(() => {
@@ -30,6 +32,8 @@ const RootLayout = (
 		if (!isRender) {
 			setIsRender(true)
 		}
+
+
 	}, [pathname, isRender])
 
 
@@ -46,7 +50,7 @@ const RootLayout = (
 			animate="enter"
 			exit="exit"
 			variants={variants}
-			transition={{ duration: 0.4, type: "linear" }}
+			transition={{ duration: 0.7, type: "linear" }}
 			className={`min-h-screen flex flex-col items-center justify-between w-full relative ${isModalOpen.open ? "fixed" : ""}`}
 			onClick={() => {
 				setIsMenuOpen(false)

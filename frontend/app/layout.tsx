@@ -10,7 +10,12 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en">
-			<head></head>
+			<head>
+				<link rel="icon" href="/favicon.svg" sizes="any" type="image/svg+xml" />
+				<title>
+					Blog-v2
+				</title>
+			</head>
 			<body className="bg-background text-text">
 				<RecoilRoot>
 					{children}

@@ -1,9 +1,9 @@
 'use client'
-import { Fragment } from 'react'
+import { Fragment, useState } from 'react'
 import ContextMenu from '@/ui/components/posts/contextmenu'
 
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
-import { contextMenuState, navbarMenuState, signInState, allPosts } from '@/atoms/states'
+import { contextMenuState, navbarMenuState, signInState, allPosts, adminState } from '@/atoms/states'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 
@@ -24,7 +24,7 @@ const customFilter = (data: allPosts, filterConfig: filterConfig) => {
 	return data;
 }
 
-const sortFunction = (data: Entries<allPosts>, filterConfig: filterConfig) => {
+const sortFunction = (data: Entries<allPosts>, filterConfig: filterConfig, setPostRendered: React.Dispatch<React.SetStateAction<boolean>>, postRendered: boolean) => {
 	if (filterConfig?.sortType === "created date") {
 		data = data.sort((a, b) => {
 			return +(new Date(a[1]?.created_at || '0')) - +new Date(b[1]?.created_at || '0')
@@ -49,6 +49,9 @@ const sortFunction = (data: Entries<allPosts>, filterConfig: filterConfig) => {
 		return data.reverse();
 	}
 
+	if (data.length !== 0 && !postRendered) {
+		setPostRendered(true)
+	}
 	return data;
 }
 
@@ -57,11 +60,14 @@ const PostsContainer = ({ filterConfig }: { filterConfig: filterConfig }) => {
 	const setIsMenuOpen = useSetRecoilState(navbarMenuState)
 	const isSignIn = useRecoilValue(signInState)
 	const allPostsData = useRecoilValue(allPosts)
+	const isAdmin = useRecoilValue(adminState)
+	const [postRendered, setPostRendered] = useState(false)
+
 	return (
 		<Fragment>
 			{contextMenuMetaData.open && <ContextMenu />}
 			{
-				filterConfig.headingName &&
+				filterConfig.headingName && postRendered &&
 				<div className="text-2xl uppercase border-b-[0.1px] h-4 border-primary/40 my-4 tracking-wide font-medium">
 					<span className='w-fit bg-background pr-6'>
 						{filterConfig.headingName}
@@ -71,14 +77,14 @@ const PostsContainer = ({ filterConfig }: { filterConfig: filterConfig }) => {
 			}
 			<div className="flex flex-col p-2">
 				{
-					sortFunction(Object.entries(customFilter(allPostsData, filterConfig)).slice(0, filterConfig.postsCount || Object.keys(allPostsData).length), filterConfig).map(entry => entry[0]).map((id, idx) => {
+					sortFunction(Object.entries(customFilter(allPostsData, filterConfig)).slice(0, filterConfig.postsCount || Object.keys(allPostsData).length), filterConfig, setPostRendered, postRendered).map(entry => entry[0]).map((id, idx) => {
 						return (allPostsData[id].title) && (
-							<Link href={{ pathname: "/post", query: { id: id } }} className='text-white no-underline' key={`postContainer+${id}+${idx}`}>
+							<Link href={{ pathname: "/post", query: { id: id } }} className='text-white no-underline' key={`postContainer+${id}+${idx}`} prefetch={true}>
 								<motion.div
 									className='flex flex-col gap-y-1 border-white/30 rounded-xl md:p-6 md:py-4 p-3'
 									whileHover={{ scale: 1.1, margin: '14px', borderColor: '#ffffff', borderWidth: '1px' }}
 									onContextMenu={(e) => {
-										if (isSignIn) {
+										if (isSignIn && isAdmin) {
 											e.preventDefault()
 											e.stopPropagation()
 											setIsMenuOpen(false)
@@ -89,12 +95,17 @@ const PostsContainer = ({ filterConfig }: { filterConfig: filterConfig }) => {
 											})
 										}
 									}}>
-									<div className='flex w-full justify-between'>
+									<div className='flex w-full justify-between items-center'>
 										<div className='text-2xl tracking-wide uppercase'>
 											{allPostsData[id].title}
 										</div>
-										<div className='text-lg font-thin'>
-											{allPostsData[id].updated_at}
+										<div className='text-sm font-thin flex flex-col justify-center items-center gap-y-1 uppercase'>
+											<div>
+												Created: {new Date(allPostsData[id]?.created_at || 0).toLocaleDateString('en-US')}
+											</div>
+											<div>
+												Updated: {new Date(allPostsData[id]?.updated_at || 0).toLocaleDateString('en-US')}
+											</div>
 										</div>
 									</div>
 									<div className='flex gap-x-2'>

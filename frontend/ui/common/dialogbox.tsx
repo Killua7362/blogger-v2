@@ -139,7 +139,7 @@ const DialogBox = ({ isModal, isHome, extraActions }: { isModal: boolean, isHome
 		<div className="bg-[#222222] relative" onClick={(e) => {
 			e.stopPropagation()
 		}}>
-			<div className="absolute left-[-100px] w-fit top-6 bg-background flex flex-col border-primary/40 border-[0.1px] rounded-lg tracking-tight animate-fade">
+			<div className="absolute left-[-100px] top-[17px] w-fit top-6 bg-background flex flex-col border-primary/40 border-[0.1px] rounded-lg tracking-tight animate-fade">
 				{
 					menuItems.map((ele, idx) => {
 						return (

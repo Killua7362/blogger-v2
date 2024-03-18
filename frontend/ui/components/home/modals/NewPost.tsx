@@ -55,8 +55,6 @@ const NewPostModal = () => {
 						content: "Empty Post",
 						pinned: false,
 						tags: data.tags,
-						created_at: "today",
-						updated_at: "yesterday"
 					}
 				}
 				

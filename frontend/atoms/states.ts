@@ -24,7 +24,7 @@ export const modalStateData = atom({
 
 export const adminState = atom({
 	key: 'adminState',
-	default: false as boolean
+	default: true as boolean
 })
 
 export const signInState = atom({
@@ -49,7 +49,7 @@ const postsSetFunction = async (set: SetRecoilState, get: GetRecoilValue, posts:
 					.catch(error => console.log(error))
 			} else {
 				//modify call
-				await axios.put(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts/${key}`, { ...payload })
+				await axios.patch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts/${key}`, { ...payload })
 					.then(res => {
 						result[res.data.data.id] = res.data.data.attributes
 					})

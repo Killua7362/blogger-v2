@@ -30,14 +30,14 @@ const BasePage = () => {
 								</motion.div>
 							</Link>
 						</div>
-						<div className='text-lg text-justify sm:tracking-wide font-thin'>
+						<div className='text-lg sm:text-justify tracking-normal sm:tracking-wide font-thin'>
 							Black Grimore is my personal digital garden. Where I share and save my knowledge. It would allow me to access my notes or guides
 							anywhere and anytime.
 						</div>
 						<Linx />
 					</div>
 					<div className="flex flex-col items-center justify-center gap-y-2">
-						<Image priority src="/images/grimoire.webp" quality={100} width={200} height={200} className='h-full w-full md:h-[150px] md:w-[200px] ' alt="Black grimoire in black clover" />
+						<Image priority src="/images/grimoire.webp" quality={100} width={200} height={200} className='h-auto w-auto h-full w-full md:h-[150px] md:w-[200px] ' alt="Black grimoire in black clover" />
 						<span className="text-sm tracking-wide">
 							Reference: Black Clover
 						</span>
@@ -56,7 +56,7 @@ const BasePage = () => {
 					sortType: "modified date"
 				}} />
 				<div className="w-full flex justify-center items-center hover:gap-x-2 cursor-pointer text-lg uppercase">
-					<Link href={{ pathname: "/posts" }} className='text-white no-underline'>
+					<Link href={{ pathname: "/posts" }} className='text-white no-underline' prefetch={true}>
 						<div>
 							All Posts
 						</div>

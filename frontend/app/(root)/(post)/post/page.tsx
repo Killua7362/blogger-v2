@@ -29,7 +29,7 @@ const Post = () => {
 		let postId = (searchParams.get('id') || '-1')
 		if (!(postId in allPostsData) || Object.keys(allPostsData[postId]).length === 0) {
 			setIsRender(false)
-			redirect('/')
+			notFound()
 		}
 		setIsContextOpen(prev => {
 			return {
@@ -54,7 +54,7 @@ const Post = () => {
 				</div>
 				<div className='flex justify-between'>
 					<div className='text-base font-thin'>
-						{content?.updated_at}
+						{new Date(content?.updated_at || 0).toLocaleDateString('en-US')}
 					</div>
 					<div className='flex gap-x-2'>
 						{(content?.tags || "").split(',').map((e, i) => {

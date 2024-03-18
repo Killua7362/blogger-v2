@@ -12,8 +12,13 @@ const CommitDiv = ({ tempDB, setTempDB, setModifyID }: { tempDB: redisCommits, s
 							<div>
 								{tempDB[key].original.title}
 							</div>
-							<div className="text-sm text-white/70">
-								CreatedOn: {tempDB[key].original.created_at}
+							<div className="text-sm text-white/70 flex gap-x-2">
+								<div>
+									Created: {new Date(tempDB[key].original.created_at || 0).toLocaleDateString('en-US')}
+								</div>
+								<div>
+									Updated: {new Date(tempDB[key].original.updated_at || 0).toLocaleDateString('en-US')}
+								</div>
 							</div>
 						</div>
 						<div className="flex flex-col gap-y-2">

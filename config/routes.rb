@@ -4,8 +4,8 @@ Rails.application.routes.draw do
   
   namespace :api do
     resources :posts, param: :id
-    resources :sessions
-    resources :registrations
+    resources :sessions, only: [:create]
+    resources :registrations, only: [:create]
   end
 
   # get '*path', to: 'pages#index', via: :all

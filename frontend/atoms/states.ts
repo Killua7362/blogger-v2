@@ -22,14 +22,30 @@ export const modalStateData = atom({
 	} as modalStateData
 })
 
-export const adminState = atom({
-	key: 'adminState',
-	default: true as boolean
+export const userDataStateSelector = selector({
+	key: 'userDataStateSelector',
+	get: async ({ get }) => {
+		let result = {
+			name: "Guest",
+			role: "viewer",
+			logged_in: false,
+		}
+		await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/sessions/logged_in`, { withCredentials: true }).then((res) => {
+			result = { ...res.data }
+		}).catch((err) => {
+			console.log(err)
+		})
+		return result
+	},
+	set: ({ set, get }, user) => {
+		const currState = get(userDataState)
+		set(userDataState, { ...currState, ...user })
+	}
 })
 
-export const signInState = atom({
-	key: 'signInState',
-	default: true as boolean
+export const userDataState = atom({
+	key: 'userDataState',
+	default: userDataStateSelector
 })
 
 // getting post from database
@@ -91,7 +107,7 @@ export const postsFetcherSelector = selector({
 	},
 	set: ({ set, get }, posts) => {
 		//api set posts
-		postsSetFunction(set, get, {...posts})
+		postsSetFunction(set, get, { ...posts })
 	}
 })
 

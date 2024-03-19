@@ -1,22 +1,27 @@
-module api
+module Api
   class SessionsController < ApplicationController
     include CurrentUserConcern
 
     def create
-      user = User.
-        find_by(email: params['user']['email']).try(:authenticate,params['user']['password'])
-
-      if user
-        session[:user_id] = user.id 
+      begin
+        user = User.where(email: params['user']['email']).first!
+        user = user.try(:authenticate,params['user']['password'])
+        if user
+          session[:user_id] = user.id 
+          render json: {
+            logged_in: true,
+            name: user.name,
+            role: user.role
+          }
+        else
+          render json: {
+            error: 'Password is wrong or you signed in with google'
+          }, status: 401
+        end
+      rescue
         render json: {
-          status: :created,
-          logged_in: true,
-          user: user
-        }
-      else
-        render json: {
-          status: 401
-        }
+          error: 'Email not found'
+        }, status: 404
       end
     end
     
@@ -24,20 +29,20 @@ module api
       if @current_user
         render json: {
           logged_in: true,
-          user: @current_usr
+          name: @current_user.name,
+          role: @current_user.role
         }
       else
         render json: {
           logged_in: false
-        }
+        }, status: 401
       end
     end
     
     def logout #do logout
       reset_session
       render json: {
-        status: 200,
-        logged_out: true
+        logged_in: false
       }
     end
   end

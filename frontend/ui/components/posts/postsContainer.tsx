@@ -3,7 +3,7 @@ import { Fragment, useState } from 'react'
 import ContextMenu from '@/ui/components/posts/contextmenu'
 
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
-import { contextMenuState, navbarMenuState, signInState, allPosts, adminState } from '@/atoms/states'
+import { contextMenuState, navbarMenuState, allPosts, userDataState } from '@/atoms/states'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 
@@ -58,10 +58,9 @@ const sortFunction = (data: Entries<allPosts>, filterConfig: filterConfig, setPo
 const PostsContainer = ({ filterConfig }: { filterConfig: filterConfig }) => {
 	const [contextMenuMetaData, setContextMenuMetaData] = useRecoilState(contextMenuState)
 	const setIsMenuOpen = useSetRecoilState(navbarMenuState)
-	const isSignIn = useRecoilValue(signInState)
 	const allPostsData = useRecoilValue(allPosts)
-	const isAdmin = useRecoilValue(adminState)
 	const [postRendered, setPostRendered] = useState(false)
+	const userData = useRecoilValue(userDataState)
 
 	return (
 		<Fragment>
@@ -84,7 +83,7 @@ const PostsContainer = ({ filterConfig }: { filterConfig: filterConfig }) => {
 									className='flex flex-col gap-y-1 border-white/30 rounded-xl md:p-6 md:py-4 p-3'
 									whileHover={{ scale: 1.1, margin: '14px', borderColor: '#ffffff', borderWidth: '1px' }}
 									onContextMenu={(e) => {
-										if (isSignIn && isAdmin) {
+										if (userData.logged_in && userData.role === "admin") {
 											e.preventDefault()
 											e.stopPropagation()
 											setIsMenuOpen(false)

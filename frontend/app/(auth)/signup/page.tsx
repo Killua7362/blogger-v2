@@ -2,15 +2,20 @@
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useRouter } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
+import axios from 'axios'
+import { useState } from 'react';
 
 const SignUp = () => {
+	const [isLoading, setIsLoading] = useState(false)
 	const router = useRouter()
 
 	const emailValidate = async (email: string) => {
 		return false;
 	}
+
 	const SignUpSchema = z.object({
+		name: z.string().min(4),
 		email: z.string().email().refine(async (value) => {
 			const exist = await emailValidate(value);
 			return !exist
@@ -27,16 +32,53 @@ const SignUp = () => {
 	const {
 		register,
 		handleSubmit,
+		setError,
 		formState: { errors }
 	} = useForm<SignUpSchemaType>({ resolver: zodResolver(SignUpSchema) })
 
+
 	return (
-		<form className="2xl:w-2/12 xl:w-3/12 lg:w-4/12 md:w-5/12 sm:w-6/12 xs:w-8/12 w-9/12 p-7 flex flex-col justify-center border-primary/30 border-[0.1px] rounded-xl gap-y-4 text-lg shadow-lg shadow-black bg-background" autocomplete="off" onSubmit={handleSubmit((data) => {
-			console.log(data)
+		<form className="2xl:w-2/12 xl:w-3/12 lg:w-4/12 md:w-5/12 sm:w-6/12 xs:w-8/12 w-9/12 p-7 flex flex-col justify-center border-primary/30 border-[0.1px] rounded-xl gap-y-4 text-lg shadow-lg shadow-black bg-background" autoComplete="off" onSubmit={handleSubmit(async (data) => {
+			setIsLoading(true)
+			await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/registrations`, {
+				user: {
+					name: data.name,
+					email: data.email,
+					password: data.password,
+					password_confirmation: data.password_confirm
+				}
+			},
+				{
+					withCredentials: true
+				}
+			).then((res) => {
+				router.push('/signin')
+			}).catch((err) => {
+				if (err.response.data.errors.email) {
+					setError("email", {
+						type: 'manual',
+						message: err.response.data.errors.email[0]
+					})
+				}
+			})
+			setIsLoading(false)
 		})}>
 			<div className="text-center text-xl uppercase tracking-wide font-semibold">
 				Sign Up
 			</div>
+			<fieldset className={`flex flex-col rounded-lg focus-within:border-[0.1px] ${errors.name ? "focus-within:border-red-800 border-red-800/60" : "focus-within:border-white border-white/60"}  border-[0.1px] focus-within:text-white text-white/60`}>
+				{
+					errors.name ?
+						<legend className="text-sm">
+							{errors.name.message}
+						</legend>
+						:
+						<legend className="text-sm">
+							Name
+						</legend>
+				}
+				<input type='text' className="bg-background text-white focus:outline-none text-base" {...register('name')} />
+			</fieldset>
 			<fieldset className={`flex flex-col rounded-lg focus-within:border-[0.1px] ${errors.email ? "focus-within:border-red-800 border-red-800/60" : "focus-within:border-white border-white/60"}  border-[0.1px] focus-within:text-white text-white/60`}>
 				{
 					errors.email ?
@@ -76,7 +118,16 @@ const SignUp = () => {
 				}
 				<input type='password' className="bg-background text-white focus:outline-none text-base" {...register('password_confirm')} />
 			</fieldset>
-			<button type='submit' className="w-full bg-[#2f2f31]/40 shadow-md hover:shadow-black hover:bg-[#2f2f31] cursor-pointer text-white/70 hover:text-white/90 text-base p-3 rounded-xl">Sign Up</button>
+			{
+				!isLoading ?
+					<button type='submit' className="w-full bg-[#2f2f31]/40 shadow-md hover:shadow-black hover:bg-[#2f2f31] cursor-pointer text-white/70 hover:text-white/90 text-base p-3 rounded-xl">Sign Up</button>
+					:
+					<div className="text-center w-full bg-[#2f2f31]/40 shadow-md hover:shadow-black hover:bg-[#2f2f31] cursor-pointer text-white/70 hover:text-white/90 text-base py-3 rounded-xl mt-2"
+					>
+						<div
+							className="inline-block h-3 w-3 animate-spin rounded-full border-4 border-solid border-white/70 border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]" />
+					</div>
+			}
 			<div className="text-md text-center border-b-[0.1px] h-4 border-primary/30 my-1 mb-2 tracking-wide font-medium text-white/70">
 				<span className='w-fit bg-background px-4'>
 					OR

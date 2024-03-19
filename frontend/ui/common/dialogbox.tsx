@@ -1,7 +1,9 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
-import { navbarMenuState, modalStateData, contextMenuState, signInState, adminState, redisCommits, allPosts, redisSelector } from '@/atoms/states'
+import { navbarMenuState, modalStateData, contextMenuState, redisCommits, allPosts, redisSelector, userDataState, userDataStateSelector } from '@/atoms/states'
+import { useRouter } from 'next/navigation'
+import axios from 'axios'
 
 const DialogBox = ({ isModal, isHome, extraActions }: { isModal: boolean, isHome: boolean, extraActions: menuItems[] }) => {
 	const [isRender, setIsRender] = useState(false)
@@ -12,16 +14,28 @@ const DialogBox = ({ isModal, isHome, extraActions }: { isModal: boolean, isHome
 	const setRedisCommitsData = useSetRecoilState(redisSelector)
 	const redisCommitsData = useRecoilValue(redisCommits)
 
-	const isSignedIn = useRecoilValue(signInState)
-	const isAdmin = useRecoilValue(adminState)
+	const userData = useRecoilValue(userDataState)
+	const setUserData = useSetRecoilState(userDataStateSelector)
+
 	const [menuItems, setMenuItems] = useState<menuItems[]>([])
 
-	const SignInHandler = () => {
+	const router = useRouter()
 
+	const SignInHandler = () => {
+		router.push('/signin')
 	}
 
-	const SignOutHandler = () => {
-
+	const SignOutHandler = async () => {
+		await axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/sessions/logout`, { withCredentials: true }).then((res) => {
+			setUserData({
+				name: "Guest",
+				role: "viewer",
+				logged_in: false,
+			})
+			window.location.reload();
+		}).catch((err) => {
+			console.log(err)
+		})
 	}
 
 	const PinHandler = () => {
@@ -112,14 +126,14 @@ const DialogBox = ({ isModal, isHome, extraActions }: { isModal: boolean, isHome
 
 	useEffect(() => {
 		if (isModal) {
-			if (isAdmin) {
+			if (userData.role === 'admin') {
 				setMenuItems([...PostItemsAdmin, ...extraActions])
 			} else {
 				setMenuItems([...extraActions])
 			}
 		} else {
-			if (isSignedIn) {
-				if (isAdmin) {
+			if (userData.logged_in) {
+				if (userData.role === 'admin') {
 					if (isHome) {
 						setMenuItems([...NavBarMenuItemsHomeAdmin, ...NavBarMenuItemsAfter])
 					} else {

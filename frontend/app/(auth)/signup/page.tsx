@@ -4,7 +4,8 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod';
 import { redirect, useRouter } from 'next/navigation';
 import axios from 'axios'
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useGoogleLogin } from '@react-oauth/google';
 
 const SignUp = () => {
 	const [isLoading, setIsLoading] = useState(false)
@@ -20,6 +21,7 @@ const SignUp = () => {
 		path: ["password_confirm"]
 	})
 
+	const [customErrors, setCustomError] = useState("")
 	type SignUpSchemaType = z.infer<typeof SignUpSchema>
 
 	const {
@@ -29,6 +31,27 @@ const SignUp = () => {
 		formState: { errors }
 	} = useForm<SignUpSchemaType>({ resolver: zodResolver(SignUpSchema) })
 
+	const googleSignInHandler = useGoogleLogin({
+		onSuccess: async (res) => {
+			await axios.post('http://localhost:3000/api/registrations/google_auth', {
+			}, {
+				withCredentials: true,
+				headers: {
+					'Content-Type': 'application/json',
+					'Authorization': `Bearer ${res.access_token}`
+				}
+			}).then(async (res) => {
+				setUserData({ ...res.data })
+				await router.push('/')
+			}).catch((err) => {
+				setCustomError(err?.response?.data?.error || "")
+			})
+		},
+		onError: (err) => {
+			console.log(err)
+		},
+		scope: 'email profile',
+	})
 
 	return (
 		<form className="2xl:w-2/12 xl:w-3/12 lg:w-4/12 md:w-5/12 sm:w-6/12 xs:w-8/12 w-9/12 p-7 flex flex-col justify-center border-primary/30 border-[0.1px] rounded-xl gap-y-4 text-lg shadow-lg shadow-black bg-background" autoComplete="off" onSubmit={handleSubmit(async (data) => {
@@ -129,6 +152,16 @@ const SignUp = () => {
 			<div className="text-center w-full bg-[#2f2f31]/40 shadow-md hover:shadow-black hover:bg-[#2f2f31] cursor-pointer text-white/70 hover:text-white/90 text-base py-3 rounded-xl mt-2" onClick={() => {
 				router.push('/signin')
 			}}>Sign In</div>
+
+			<div className="text-center w-full bg-[#2f2f31]/40 shadow-md hover:shadow-black hover:bg-[#2f2f31] cursor-pointer text-white/70 hover:text-white/90 text-base py-3 rounded-xl mt-2" onClick={() => {
+				googleSignInHandler()
+			}}>Google SignIn</div>
+			{
+				customErrors.length !== 0 &&
+				<div className='text-sm text-red-500'>
+					{customErrors}
+				</div>
+			}
 		</form>
 	)
 }

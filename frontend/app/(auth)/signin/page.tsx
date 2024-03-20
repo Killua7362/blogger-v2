@@ -2,7 +2,7 @@
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useRouter } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
 import axios from 'axios'
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { userDataState, userDataStateSelector } from '@/atoms/states';
@@ -46,11 +46,11 @@ const SignIn = () => {
 					'Content-Type': 'application/json',
 					'Authorization': `Bearer ${res.access_token}`
 				}
-			}).then((res) => {
+			}).then(async (res) => {
 				setUserData({ ...res.data })
-				router.push('/')
+				await router.push('/')
 			}).catch((err) => {
-				setCustomError(err.response.data.error || "")
+				setCustomError(err?.response?.data?.error || "")
 			})
 		},
 		onError: (err) => {

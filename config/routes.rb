@@ -16,4 +16,5 @@ Rails.application.routes.draw do
 
   delete '/api/sessions/logout', to: 'api/sessions#logout'
   get '/api/sessions/logged_in', to: 'api/sessions#logged_in'
+  post '/api/registrations/google_auth', to: 'api/registrations#google_auth'
 end

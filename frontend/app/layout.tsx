@@ -1,5 +1,6 @@
 'use client'
 
+import { WebReport } from "@/ui/layout/WebReport";
 import "./globals.css";
 import { RecoilRoot } from "recoil";
 

@@ -59,3 +59,8 @@ interface previewButton {
 	value: PreviewType;
 }
 
+interface userData {
+	name: string;
+	role: string;
+	logged_in: boolean;
+}

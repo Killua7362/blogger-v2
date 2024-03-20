@@ -5,18 +5,23 @@ module Api
     def create
       begin
         user = User.where(email: params['user']['email']).first!
-        user = user.try(:authenticate,params['user']['password'])
-        if user
-          session[:user_id] = user.id 
-          render json: {
-            logged_in: true,
-            name: user.name,
-            role: user.role
-          }
+        if user.provider == "rails_login"
+          if user and user.try(:authenticate,params['user']['password'])
+            session[:user_id] = user.id 
+            render json: {
+              logged_in: true,
+              name: user.name,
+              role: user.role
+            }
+          else
+            render json: {
+              error: 'Password is wrong'
+            }, status: 401
+          end
         else
           render json: {
-            error: 'Password is wrong or you signed in with google'
-          }, status: 401
+            error: 'Email is registered with Google provider'
+          }, status: 404
         end
       rescue
         render json: {

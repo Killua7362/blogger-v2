@@ -10,6 +10,10 @@ const withAnalyzer = withBundleAnalyzer({
 const nextConfig = {
 	compiler: {
 		styledComponents: true
+	},
+	env: {
+		CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
+		CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET
 	}
 };
 

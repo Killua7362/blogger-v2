@@ -2,7 +2,7 @@
 import { Fragment } from 'react'
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
-import { contextMenuState, navbarMenuState, modalStateData } from '@/atoms/states'
+import { contextMenuState, navbarMenuState, modalStateData, userDataState } from '@/atoms/states'
 import DialogBox from '@/ui/common/dialogbox'
 
 import Modal from '@/ui/components/home/modals'
@@ -13,17 +13,22 @@ const NavBar = ({ isHome }: { isHome: boolean }) => {
 	const [isMenuOpen, setIsMenuOpen] = useRecoilState(navbarMenuState)
 	const isModalOpen = useRecoilValue(modalStateData)
 	const setContextMenuMetaData = useSetRecoilState(contextMenuState)
+	const userData = useRecoilValue(userDataState)
 	return (
 		<Fragment>
 			{
 				isModalOpen.open &&
 				<Modal />
 			}
-			<div className="z-20 2xl:w-6/12 xl:w-7/12 lg:w-8/12 w-10/12 absolute h-0 border-primary/40 flex items-center justify-center py-12 border-b-[0.1px] bg-background">
+			<div className="z-20 2xl:w-6/12 xl:w-7/12 lg:w-8/12 w-10/12 absolute h-0 border-primary/40 flex items-center justify-center py-14 border-b-[0.1px] bg-background">
 				<div className="w-full flex justify-between items-center">
 					<Link href="/" className='no-underline text-white'>
+
+						<div className='text-md uppercase'>
+							Welcome {userData.name}
+						</div>
 						<div className="uppercase text-3xl font-medium tracking-wide">
-							Akshay Bhat
+							Black Grimore
 						</div>
 					</Link>
 					<a className="text-xl flex items-center justify-center cursor-pointer hover:text-white/80 hover:bg-[#333333]/30 bg-background px-3 py-1 rounded-xl border-primary/40 border-[0.1px]" onClick={(e) => {

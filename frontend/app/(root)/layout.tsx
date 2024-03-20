@@ -54,7 +54,7 @@ const RootLayout = (
 			}}
 		>
 			<NavBar isHome={isHome} />
-			<div className="pt-28 2xl:w-6/12 xl:w-7/12 lg:w-8/12 w-10/12" >
+			<div className="pt-32 2xl:w-6/12 xl:w-7/12 lg:w-8/12 w-10/12" >
 				{children}
 			</div>
 			<Footer />

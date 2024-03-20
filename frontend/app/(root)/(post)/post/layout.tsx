@@ -9,7 +9,7 @@ const PostsLayout = (
 	const router = useRouter()
 	return (
 		<Fragment>
-			<div className='text-white flex gap-x-2 items-center text-base mb-4 cursor-pointer' onClick={() => {
+			<div className='mt-2 text-white flex gap-x-2 items-center text-base mb-4 cursor-pointer' onClick={() => {
 				router.back()
 			}}>
 				<RiArrowLeftSLine />

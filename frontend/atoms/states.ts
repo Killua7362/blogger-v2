@@ -22,23 +22,35 @@ export const modalStateData = atom({
 	} as modalStateData
 })
 
-export const userDataStateSelector = selector({
-	key: 'userDataStateSelector',
+const userDataStateSelectorHelper = selector({
+	key: 'userDataStateSelectorHelper',
 	get: async ({ get }) => {
-		let result = {
+		let result: userData = {
 			name: "Guest",
 			role: "viewer",
 			logged_in: false,
 		}
+		if (typeof window === 'undefined') return result as userData;
 		await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/sessions/logged_in`, { withCredentials: true }).then((res) => {
 			result = { ...res.data }
 		}).catch((err) => {
 			console.log(err)
 		})
-		return result
+		return result as userData
+	},
+})
+export const userDataStateSelector = selector({
+	key: 'userDataStateSelector',
+	get: ({ get }) => {
+		if (typeof window === 'undefined') return {
+			name: "Guest",
+			role: "viewer",
+			logged_in: false,
+		} as userData
+		return get(userDataStateSelectorHelper) as userData
 	},
 	set: ({ set, get }, user) => {
-		const currState = get(userDataState)
+		const currState: userData = get(userDataState)
 		set(userDataState, { ...currState, ...user })
 	}
 })
@@ -91,6 +103,7 @@ const postsSetFunction = async (set: SetRecoilState, get: GetRecoilValue, posts:
 export const postsFetcherSelector = selector({
 	key: 'postsFetcherSelector',
 	get: async () => {
+		if (typeof window === 'undefined') return {} as allPosts;
 		//fetch from database
 		const data = localStorage.getItem('posts')
 		let result: allPosts = {}
@@ -129,7 +142,6 @@ const redisSetFunction = (set: SetRecoilState, get: GetRecoilValue, newPost: red
 	else if (size === 1) {
 		let key = Object.keys(newPost)[0]
 		if ((newPost[key]?.history || []).length === 0) {
-			console.log('came here')
 			delete currState[key]
 			localStorage.setItem('all_commits', JSON.stringify({ ...currState }))
 			set(redisCommits, { ...currState })
@@ -158,6 +170,8 @@ const redisSetFunction = (set: SetRecoilState, get: GetRecoilValue, newPost: red
 export const redisSelector = selector({
 	key: "redisSelector",
 	get: async () => {
+		if (typeof window === 'undefined') return {} as redisCommits;
+
 		const data = localStorage.getItem('all_commits')
 		if (!data) {
 			// fetch api and set localstorage

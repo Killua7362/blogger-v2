@@ -10,16 +10,9 @@ const SignUp = () => {
 	const [isLoading, setIsLoading] = useState(false)
 	const router = useRouter()
 
-	const emailValidate = async (email: string) => {
-		return false;
-	}
-
 	const SignUpSchema = z.object({
 		name: z.string().min(4),
-		email: z.string().email().refine(async (value) => {
-			const exist = await emailValidate(value);
-			return !exist
-		}, { message: 'Email already exist', checkAsync: true }),
+		email: z.string().email(),
 		password: z.string().min(6).max(12),
 		password_confirm: z.string().min(6).max(12)
 	}).refine((data) => data.password === data.password_confirm, {
@@ -54,10 +47,10 @@ const SignUp = () => {
 			).then((res) => {
 				router.push('/signin')
 			}).catch((err) => {
-				if (err.response.data.errors.email) {
+				if (err.response.data.error) {
 					setError("email", {
 						type: 'manual',
-						message: err.response.data.errors.email[0]
+						message: err.response.data.error
 					})
 				}
 			})

@@ -25,9 +25,6 @@ const NavBar = ({ isHome }: { isHome: boolean }) => {
 					<Link href="/" className='no-underline text-white'>
 
 						<div className='flex gap-x-2 uppercase text-base tracking-wider items-center'>
-							<div>
-								Welcome
-							</div>
 							<div className=''>
 								{userData.name}
 							</div>

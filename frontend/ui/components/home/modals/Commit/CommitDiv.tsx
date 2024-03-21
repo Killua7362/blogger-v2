@@ -7,7 +7,7 @@ const CommitDiv = ({ tempDB, setTempDB, setModifyID }: { tempDB: redisCommits, s
 		<div className="w-full h-full border-primary/30 border-[0.1px] rounded-xl tracking-wide font-normal text-md overflow-y-auto">
 			{Object.keys(tempDB).map((key, _) => {
 				return tempDB[key].history.length !== 0 && (
-					<div className="p-4 m-2 rounded-md flex gap-x-4 gap-y-2 justify-between px-10 border-white/30 border-[0.1px] text-lg" id={`commitItems${key}`}>
+					<div className="p-2 sm:p-4 m-2 rounded-md flex sm:flex-row flex-col gap-x-4 gap-y-2 justify-between px-10 border-white/30 border-[0.1px] text-lg" id={`commitItems${key}`}>
 						<div>
 							<div>
 								{tempDB[key].original.title}

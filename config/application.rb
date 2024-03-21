@@ -20,7 +20,7 @@ module Api
     config.middleware.use ActionDispatch::Session::CookieStore
   
     config.action_dispatch.cookies_same_site_production =
-      :strict
+      :none
     # Configuration for the application, engines, and railties goes here.
     #
     # These settings can be overridden in specific environments using the files

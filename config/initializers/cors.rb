@@ -7,7 +7,7 @@
 
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
-    origins "https://blogger-v2.vercel.app/"
+    origins "blogger-v2.vercel.app"
 
     resource "*",
       headers: :any,

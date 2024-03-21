@@ -31,7 +31,7 @@ const userDataStateSelectorHelper = selector({
 			logged_in: false,
 		}
 		if (typeof window === 'undefined') return result as userData;
-		await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/sessions/logged_in`, { withCredentials: true }).then((res) => {
+		await axios.get(`${process.env.BACKEND_URL}/api/sessions/logged_in`, { withCredentials: true }).then((res) => {
 			result = { ...res.data }
 		}).catch((err) => {
 			console.log(err)
@@ -73,11 +73,11 @@ const postsSetFunction = async (set: SetRecoilState, get: GetRecoilValue, posts:
 			//update and delete
 			if (size === 0) {
 				//delete call
-				await axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts/${key}`, { withCredentials: true })
+				await axios.delete(`${process.env.BACKEND_URL}/api/posts/${key}`, { withCredentials: true })
 					.catch(error => console.log(error))
 			} else {
 				//modify call
-				await axios.patch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts/${key}`, { ...payload }, { withCredentials: true })
+				await axios.patch(`${process.env.BACKEND_URL}/api/posts/${key}`, { ...payload }, { withCredentials: true })
 					.then(res => {
 						result[res.data.data.id] = res.data.data.attributes
 					})
@@ -86,14 +86,14 @@ const postsSetFunction = async (set: SetRecoilState, get: GetRecoilValue, posts:
 		} else {
 			//create
 			if (size !== 0) {
-				await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts`, payload, { withCredentials: true })
+				await axios.post(`${process.env.BACKEND_URL}/api/posts`, payload, { withCredentials: true })
 					.then(res => {
 						result[res.data.data.id] = res.data.data.attributes
 					}).catch(error => console.log(error))
 			}
 		}
 	}
-	axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/commits`, { withCredentials: true })
+	axios.delete(`${process.env.BACKEND_URL}/api/commits`, { withCredentials: true })
 		.catch(error => console.log(error))
 
 	localStorage.removeItem('all_commits')
@@ -109,7 +109,7 @@ export const postsFetcherSelector = selector({
 		let result: allPosts = {}
 
 		if (!data) {
-			const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts`, { withCredentials: true })
+			const res = await axios.get(`${process.env.BACKEND_URL}/api/posts`, { withCredentials: true })
 			for (let arr of res.data.data) {
 				result[arr['id']] = { ...arr['attributes'] }
 			}
@@ -139,7 +139,7 @@ const redisSetFunction = (set: SetRecoilState, get: GetRecoilValue, newPost: red
 	let size = Object.keys(newPost).length
 	if (size === 0) {
 		//empty call should clear the redis
-		axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/commits`, { withCredentials: true })
+		axios.delete(`${process.env.BACKEND_URL}/api/commits`, { withCredentials: true })
 		set(redisCommits, {})
 		localStorage.removeItem('all_commits')
 	}
@@ -149,21 +149,21 @@ const redisSetFunction = (set: SetRecoilState, get: GetRecoilValue, newPost: red
 			delete currState[key]
 			localStorage.setItem('all_commits', JSON.stringify({ ...currState }))
 			set(redisCommits, { ...currState })
-			axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/commits/${key}`, { withCredentials: true })
+			axios.delete(`${process.env.BACKEND_URL}/api/commits/${key}`, { withCredentials: true })
 		} else {
 			localStorage.setItem('all_commits', JSON.stringify({ ...currState, ...newPost }))
 			set(redisCommits, { ...currState, ...newPost })
-			axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/commits/${key}`, { ...newPost }, { withCredentials: true })
+			axios.post(`${process.env.BACKEND_URL}/api/commits/${key}`, { ...newPost }, { withCredentials: true })
 		}
 	} else {
 		let result: redisCommits = {}
 		for (let key in newPost) {
 			if ((newPost[key]?.history || []).length === 0) {
 				delete currState[key]
-				axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/commits/${key}`, { withCredentials: true })
+				axios.delete(`${process.env.BACKEND_URL}/api/commits/${key}`, { withCredentials: true })
 			} else {
 				result[key] = newPost[key]
-				axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/commits/${key}`, { ...result[key] }, { withCredentials: true })
+				axios.post(`${process.env.BACKEND_URL}/api/commits/${key}`, { ...result[key] }, { withCredentials: true })
 			}
 		}
 		localStorage.setItem('all_commits', JSON.stringify({ ...currState, ...result }))
@@ -180,7 +180,7 @@ export const redisSelector = selector({
 			const data = localStorage.getItem('all_commits')
 			if (!data) {
 				// fetch api and set localstorage
-				const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/commits`, { withCredentials: true }).catch((err) => {
+				const res = await axios.get(`${process.env.BACKEND_URL}/api/commits`, { withCredentials: true }).catch((err) => {
 					return {} as redisCommits
 				})
 				const result: redisCommits = {}

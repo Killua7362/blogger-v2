@@ -1,6 +1,4 @@
-import dotenv from 'dotenv'
 import withBundleAnalyzer from '@next/bundle-analyzer';
-dotenv.config({ path: "../.env" })
 
 const withAnalyzer = withBundleAnalyzer({
 	enabled: process.env.ANALYZE === 'true',
@@ -14,8 +12,9 @@ const nextConfig = {
 	},
 	env: {
 		CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
-		CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET
+		CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
+		BACKEND_URL: process.env.BACKEND_URL
 	}
 };
 
-export default withAnalyzer(nextConfig);
+export default nextConfig;

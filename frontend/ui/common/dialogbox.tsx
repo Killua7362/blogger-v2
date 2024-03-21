@@ -26,7 +26,7 @@ const DialogBox = ({ isModal, isHome, extraActions }: { isModal: boolean, isHome
 	}
 
 	const SignOutHandler = async () => {
-		await axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/sessions/logout`, { withCredentials: true }).then((res) => {
+		await axios.delete(`${process.env.BACKEND_URL}/api/sessions/logout`, { withCredentials: true }).then((res) => {
 			setUserData({
 				name: "Guest",
 				role: "viewer",

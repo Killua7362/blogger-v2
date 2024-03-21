@@ -63,7 +63,7 @@ const SignIn = () => {
 	return isRender && (
 		<form className="2xl:w-2/12 xl:w-3/12 lg:w-4/12 md:w-5/12 sm:w-6/12 xs:w-8/12 w-9/12 p-7 flex flex-col justify-center border-primary/30 border-[0.1px] rounded-xl gap-y-4 text-lg shadow-lg shadow-black bg-background" autoComplete="off" onSubmit={handleSubmit(async (data) => {
 			setIsLoading(true)
-			await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/sessions`, {
+			await axios.post(`${process.env.BACKEND_URL}/api/sessions`, {
 				user: {
 					email: data.email,
 					password: data.password,

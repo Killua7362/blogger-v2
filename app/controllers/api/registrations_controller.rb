@@ -17,14 +17,14 @@ module Api
           }, status: 500
         end
       else
-        user = User.new(
+        user = User.create(
           name: params['user']['name'],
           email: params['user']['email'],
           password: params['user']['password'],
           password_confirmation: params['user']['password_confirmation']
         ) 
 
-        if user.save?
+        if user and user.errors.messages.empty?
           head :no_content
         else
           render json: {

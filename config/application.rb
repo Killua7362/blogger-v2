@@ -15,9 +15,9 @@ module Api
     # not contain `.rb` files, or that should not be reloaded or eager loaded.
     # Common ones are `templates`, `generators`, or `middleware`, for example.
     config.autoload_lib(ignore: %w(assets tasks))
-    config.session_store :cookie_store, key: '_interslice_session', domain: "blogger-v2.onrender.com", same_site: :none
+    config.session_store :cookie_store, key: '_interslice_session', domain: "blogger-v2.onrender.com", same_site: :none, httponly: :true, secure: :true
     config.middleware.use ActionDispatch::Cookies # Required for all session management
-    config.middleware.use ActionDispatch::Session::CookieStore, config.session_options
+    config.middleware.use config.session_store, config.session_options
   
     config.action_dispatch.cookies_same_site_production =
       :none

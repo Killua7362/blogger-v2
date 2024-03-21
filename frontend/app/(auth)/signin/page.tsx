@@ -20,6 +20,7 @@ const SignIn = () => {
 	const [isRender, setIsRender] = useState(false)
 	const [isLoading, setIsLoading] = useState(false)
 	const [customErrors, setCustomError] = useState("")
+	const [checked, setChecked] = useState(false)
 
 	type SignInSchemaType = z.infer<typeof SignInSchema>
 
@@ -65,14 +66,15 @@ const SignIn = () => {
 			await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/sessions`, {
 				user: {
 					email: data.email,
-					password: data.password
+					password: data.password,
+					remember: checked
 				}
 			},
 				{
 					withCredentials: true
 				}
 			).then((res) => {
-				setUserData({ ...res.data })
+				setUserData({ ...res.data } as userData)
 				setIsLoading(false)
 				router.push('/')
 			}).catch((err) => {
@@ -119,6 +121,14 @@ const SignIn = () => {
 				}
 				<input type='password' className="bg-background text-white focus:outline-none text-base" {...register('password')} />
 			</fieldset>
+			<div className='text-base flex items-center gap-x-2 text-white/80'>
+				<input type='checkbox' className='cursor-pointer' onChange={(e) => {
+					setChecked(e.target.checked)
+				}} />
+				<div>
+					Remember me
+				</div>
+			</div>
 			{
 				!isLoading ?
 					<button type='submit' className="w-full bg-[#2f2f31]/40 shadow-md hover:shadow-black hover:bg-[#2f2f31] cursor-pointer text-white/70 hover:text-white/90 text-base p-3 rounded-xl">Sign In</button>

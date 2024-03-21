@@ -54,6 +54,7 @@ module Api
 
         if user.valid? and user.errors.messages.empty?
           session[:user_id] = user.id 
+          session[:expires_at] = Time.current + 7.days
           render json: {
               logged_in: true,
               name: user.name,

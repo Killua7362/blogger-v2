@@ -9,7 +9,8 @@ const withAnalyzer = withBundleAnalyzer({
 /** @type {import('next').NextConfig} */
 const nextConfig = {
 	compiler: {
-		styledComponents: true
+		styledComponents: true,
+		removeConsole: process.env.NODE_ENV === 'production' ? true : false,
 	},
 	env: {
 		CLIENT_ID: process.env.GOOGLE_CLIENT_ID,

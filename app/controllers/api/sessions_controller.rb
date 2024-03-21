@@ -8,6 +8,9 @@ module Api
         if user.provider == "rails_login"
           if user and user.try(:authenticate,params['user']['password'])
             session[:user_id] = user.id 
+            if not params['user']['remember']
+              session[:expires_at] = Time.current + 7.days
+            end
             render json: {
               logged_in: true,
               name: user.name,
@@ -38,6 +41,7 @@ module Api
           role: @current_user.role
         }
       else
+        reset_session
         render json: {
           logged_in: false
         }, status: 401

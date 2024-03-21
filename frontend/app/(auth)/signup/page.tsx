@@ -6,10 +6,14 @@ import { redirect, useRouter } from 'next/navigation';
 import axios from 'axios'
 import { useEffect, useState } from 'react';
 import { useGoogleLogin } from '@react-oauth/google';
+import { userDataStateSelector } from '@/atoms/states';
+import { useSetRecoilState } from 'recoil';
 
 const SignUp = () => {
 	const [isLoading, setIsLoading] = useState(false)
 	const router = useRouter()
+
+	const setUserData = useSetRecoilState(userDataStateSelector)
 
 	const SignUpSchema = z.object({
 		name: z.string().min(4),
@@ -41,7 +45,7 @@ const SignUp = () => {
 					'Authorization': `Bearer ${res.access_token}`
 				}
 			}).then(async (res) => {
-				setUserData({ ...res.data })
+				setUserData({ ...res.data } as userData)
 				await router.push('/')
 			}).catch((err) => {
 				setCustomError(err?.response?.data?.error || "")

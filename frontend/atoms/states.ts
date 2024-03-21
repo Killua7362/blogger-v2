@@ -73,11 +73,11 @@ const postsSetFunction = async (set: SetRecoilState, get: GetRecoilValue, posts:
 			//update and delete
 			if (size === 0) {
 				//delete call
-				await axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts/${key}`)
+				await axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts/${key}`, { withCredentials: true })
 					.catch(error => console.log(error))
 			} else {
 				//modify call
-				await axios.patch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts/${key}`, { ...payload })
+				await axios.patch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts/${key}`, { ...payload }, { withCredentials: true })
 					.then(res => {
 						result[res.data.data.id] = res.data.data.attributes
 					})
@@ -86,14 +86,14 @@ const postsSetFunction = async (set: SetRecoilState, get: GetRecoilValue, posts:
 		} else {
 			//create
 			if (size !== 0) {
-				await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts`, payload)
+				await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts`, payload, { withCredentials: true })
 					.then(res => {
 						result[res.data.data.id] = res.data.data.attributes
 					}).catch(error => console.log(error))
 			}
 		}
 	}
-	axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/commits`)
+	axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/commits`, { withCredentials: true })
 		.catch(error => console.log(error))
 
 	localStorage.removeItem('all_commits')
@@ -109,7 +109,7 @@ export const postsFetcherSelector = selector({
 		let result: allPosts = {}
 
 		if (!data) {
-			const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts`)
+			const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts`, { withCredentials: true })
 			for (let arr of res.data.data) {
 				result[arr['id']] = { ...arr['attributes'] }
 			}
@@ -119,8 +119,12 @@ export const postsFetcherSelector = selector({
 		return JSON.parse(data) as allPosts
 	},
 	set: ({ set, get }, posts) => {
-		//api set posts
-		postsSetFunction(set, get, { ...posts })
+
+		const userData = get(userDataState)
+		if (userData.logged_in && userData.role === 'admin') {
+			//api set posts
+			postsSetFunction(set, get, { ...posts })
+		}
 	}
 })
 
@@ -135,7 +139,7 @@ const redisSetFunction = (set: SetRecoilState, get: GetRecoilValue, newPost: red
 	let size = Object.keys(newPost).length
 	if (size === 0) {
 		//empty call should clear the redis
-		axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/commits`)
+		axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/commits`, { withCredentials: true })
 		set(redisCommits, {})
 		localStorage.removeItem('all_commits')
 	}
@@ -145,21 +149,21 @@ const redisSetFunction = (set: SetRecoilState, get: GetRecoilValue, newPost: red
 			delete currState[key]
 			localStorage.setItem('all_commits', JSON.stringify({ ...currState }))
 			set(redisCommits, { ...currState })
-			axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/commits/${key}`)
+			axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/commits/${key}`, { withCredentials: true })
 		} else {
 			localStorage.setItem('all_commits', JSON.stringify({ ...currState, ...newPost }))
 			set(redisCommits, { ...currState, ...newPost })
-			axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/commits/${key}`, { ...newPost })
+			axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/commits/${key}`, { ...newPost }, { withCredentials: true })
 		}
 	} else {
 		let result: redisCommits = {}
 		for (let key in newPost) {
 			if ((newPost[key]?.history || []).length === 0) {
 				delete currState[key]
-				axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/commits/${key}`)
+				axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/commits/${key}`, { withCredentials: true })
 			} else {
 				result[key] = newPost[key]
-				axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/commits/${key}`, { ...result[key] })
+				axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/commits/${key}`, { ...result[key] }, { withCredentials: true })
 			}
 		}
 		localStorage.setItem('all_commits', JSON.stringify({ ...currState, ...result }))
@@ -169,26 +173,35 @@ const redisSetFunction = (set: SetRecoilState, get: GetRecoilValue, newPost: red
 
 export const redisSelector = selector({
 	key: "redisSelector",
-	get: async () => {
+	get: async ({ get }) => {
 		if (typeof window === 'undefined') return {} as redisCommits;
-
-		const data = localStorage.getItem('all_commits')
-		if (!data) {
-			// fetch api and set localstorage
-			const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/commits`)
-			const result: redisCommits = {}
-			for (const key in res.data) {
-				if (res.data[key]) {
-					result[key] = JSON.parse(res.data[key])
+		const userData = get(userDataState)
+		if (userData.logged_in && userData.role === 'admin') {
+			const data = localStorage.getItem('all_commits')
+			if (!data) {
+				// fetch api and set localstorage
+				const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/commits`, { withCredentials: true }).catch((err) => {
+					return {} as redisCommits
+				})
+				const result: redisCommits = {}
+				for (const key in (res?.data || {})) {
+					if (res.data[key]) {
+						result[key] = JSON.parse(res.data[key])
+					}
 				}
+				localStorage.setItem('all_commits', JSON.stringify({ ...result }))
+				return { ...result } as redisCommits
 			}
-			localStorage.setItem('all_commits', JSON.stringify({ ...result }))
-			return { ...result } as redisCommits
+			return JSON.parse(data) as redisCommits
+		} else {
+			return {} as redisCommits
 		}
-		return JSON.parse(data) as redisCommits
 	},
 	set: ({ set, get }, newPost) => {
-		redisSetFunction(set, get, { ...newPost })
+		const userData = get(userDataState)
+		if (userData.logged_in && userData.role === 'admin') {
+			redisSetFunction(set, get, { ...newPost })
+		}
 	}
 })
 
@@ -202,17 +215,21 @@ export const allPostsSelector = selector({
 	key: "allPostsSelector",
 	get: ({ get }) => {
 		const dbPosts = get(postsFetcher)
-		const allCommits = get(redisCommits)
-
-		let result: allPosts = {}
-		for (let id in allCommits) {
-			if ((allCommits[id]?.history || []).length !== 0) {
-				let payload = (allCommits[id]?.history).slice(-1)[0].payload
-				result[id] = payload
+		const userData = get(userDataState)
+		if (userData.logged_in && userData.role === 'admin') {
+			const allCommits = get(redisCommits)
+			let result: allPosts = {}
+			for (let id in allCommits) {
+				if ((allCommits[id]?.history || []).length !== 0) {
+					let payload = (allCommits[id]?.history).slice(-1)[0].payload
+					result[id] = payload
+				}
 			}
-		}
 
-		return { ...dbPosts, ...result } as allPosts
+			return { ...dbPosts, ...result } as allPosts
+		} else {
+			return { ...dbPosts } as allPosts
+		}
 	}
 })
 

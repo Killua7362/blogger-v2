@@ -1,5 +1,6 @@
 module Api
   class PostsController < ApplicationController
+    include CurrentUserConcern
 
     def index
       posts = Rails.cache.fetch("all_posts") do 
@@ -18,40 +19,52 @@ module Api
     end
 
     def create
-      post = Post.new(post_params)
-      if post.save
-        Rails.cache.write("post_#{post.id}",post)
-        Rails.cache.delete("all_posts")
-        render json: PostSerializer.new(post).serializable_hash.to_json
+      if @current_user and @current_user.role == 'admin'
+        post = Post.new(post_params)
+        if post.save
+          Rails.cache.write("post_#{post.id}",post)
+          Rails.cache.delete("all_posts")
+          render json: PostSerializer.new(post).serializable_hash.to_json
+        else
+          render json: {error: post.errors.messages},status: 422
+        end
       else
-        render json: {error: post.errors.messages},status: 422
+        render json: {error: ["Unauthorized"]}, status: 401
       end
     end
 
     def update
-      post = Rails.cache.fetch("post_#{params[:id]}") do 
-        Post.find_by(id: params[:id])
-      end
+      if @current_user and @current_user.role == 'admin'
+        post = Rails.cache.fetch("post_#{params[:id]}") do 
+          Post.find_by(id: params[:id])
+        end
 
-      if post.update(post_params)
-        Rails.cache.write("post_#{params[:id]}",post)
-        Rails.cache.delete("all_posts")
-        render json: PostSerializer.new(post).serializable_hash.to_json
+        if post.update(post_params)
+          Rails.cache.write("post_#{params[:id]}",post)
+          Rails.cache.delete("all_posts")
+          render json: PostSerializer.new(post).serializable_hash.to_json
+        else
+          render json: {error: post.errors.messages},status: 422
+        end
       else
-        render json: {error: post.errors.messages},status: 422
+        render json: {error: ["Unauthorized"]}, status: 401
       end
     end
 
 
     def destroy
-      post = Post.find_by(id: params[:id])
+      if @current_user and @current_user.role == 'admin'
+        post = Post.find_by(id: params[:id])
 
-      if post.destroy
-        Rails.cache.delete("post_#{params[:id]}")
-        Rails.cache.delete("all_posts")
-        head :no_content
+        if post.destroy
+          Rails.cache.delete("post_#{params[:id]}")
+          Rails.cache.delete("all_posts")
+          head :no_content
+        else
+          render json: {error: post.errors.messages},status: 422
+        end
       else
-        render json: {error: post.errors.messages},status: 422
+        render json: {error: ["Unauthorized"]}, status: 401
       end
     end
 

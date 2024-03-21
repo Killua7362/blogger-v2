@@ -4,7 +4,7 @@ import { FcSearch } from "react-icons/fc";
 import { AiOutlineArrowUp, AiOutlineArrowDown } from "react-icons/ai";
 
 import dynamic from 'next/dynamic';
-const PostsContainer = dynamic(() => import('@/ui/components/posts/postsContainer'), { ssr: false, loading: () => <p>Loading...</p> })
+const PostsContainer = dynamic(() => import('@/ui/components/posts/postsContainer'), { ssr: true })
 
 const AllPosts = () => {
 	const [filterConfig, setFilterConfig] = useState<filterConfig>({

@@ -24,8 +24,13 @@ const NavBar = ({ isHome }: { isHome: boolean }) => {
 				<div className="w-full flex justify-between items-center">
 					<Link href="/" className='no-underline text-white'>
 
-						<div className='text-md uppercase'>
-							Welcome {userData.name}
+						<div className='flex gap-x-2 uppercase text-base tracking-wider items-center'>
+							<div>
+								Welcome
+							</div>
+							<div className=''>
+								{userData.name}
+							</div>
 						</div>
 						<div className="uppercase text-3xl font-medium tracking-wide">
 							Black Grimore

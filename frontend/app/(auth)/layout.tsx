@@ -9,7 +9,7 @@ export default function RootLayout({
 }>) {
 	return (
 
-		<GoogleOAuthProvider clientId={process.env.CLIENT_ID}>
+		<GoogleOAuthProvider clientId={process.env.CLIENT_ID || ""}>
 			<div className="min-h-screen w-full flex justify-center items-center bg-[#151518]">
 				{children}
 			</div>

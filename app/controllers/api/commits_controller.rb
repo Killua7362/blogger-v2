@@ -1,35 +1,52 @@
 module Api
   class CommitsController < ApplicationController
     require 'json'
+    include CurrentUserConcern
+
     def index
-      keys = $redis.keys('commit_*')
-      res = {}
-      if !keys.empty?
-        values = $redis.mget(*keys)
-        keys.zip(values).each do |k,v|
-          res[k.gsub("commit_","")] = v.gsub(/[^[:print:]]/, '')
+      if @current_user and @current_user.role == 'admin'
+        keys = $redis.keys('commit_*')
+        res = {}
+        if !keys.empty?
+          values = $redis.mget(*keys)
+          keys.zip(values).each do |k,v|
+            res[k.gsub("commit_","")] = v.gsub(/[^[:print:]]/, '')
+          end
         end
+        render json: res.to_json
+      else
+        render json: {}, status: 401
       end
-      render json: res.to_json
     end
 
     def create
-      Rails.cache.write("commit_#{params[:id]}",params[params[:id]].to_json)
-      render json: params[params[:id]].to_json
+      if @current_user and @current_user.role == 'admin'
+        Rails.cache.write("commit_#{params[:id]}",params[params[:id]].to_json)
+        render json: params[params[:id]].to_json
+      else
+        render json: {}, status: 401
+      end
     end
   
     def destroy
-      Rails.cache.delete("commit_#{params[:id]}")
-      head :no_content
+      if @current_user and @current_user.role == 'admin'
+        Rails.cache.delete("commit_#{params[:id]}")
+        head :no_content
+      else
+        render json: {}, status: 401
+      end
     end
 
     def clear
-      keys = $redis.keys('commit_*')
-      if !keys.empty?
-        $redis.del(*keys)
+      if @current_user and @current_user.role == 'admin'
+        keys = $redis.keys('commit_*')
+        if !keys.empty?
+          $redis.del(*keys)
+        end
+        head :no_content
+      else
+        render json: {}, status: 401
       end
-
-      head :no_content
     end
 
   end

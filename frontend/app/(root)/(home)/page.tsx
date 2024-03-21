@@ -9,7 +9,7 @@ import { motion } from 'framer-motion'
 import dynamic from 'next/dynamic';
 import { useRecoilValue } from 'recoil';
 
-const PostsContainer = dynamic(() => import('@/ui/components/posts/postsContainer'), { ssr: false })
+const PostsContainer = dynamic(() => import('@/ui/components/posts/postsContainer'), { ssr: true })
 const Linx = dynamic(() => import('@/ui/layout/linkx'), { ssr: false })
 
 const BasePage = () => {

@@ -40,7 +40,7 @@ const SignIn = () => {
 
 	const googleSignInHandler = useGoogleLogin({
 		onSuccess: async (res) => {
-			await axios.post('http://localhost:3000/api/registrations/google_auth', {
+			await axios.post(`${process.env.BACKEND_URL}/api/registrations/google_auth`, {
 			}, {
 				withCredentials: true,
 				headers: {
